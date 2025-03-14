@@ -29,6 +29,7 @@ function Bowl (size, base) {
         }
 
         this.proteines.push(proteine);
+        this.proteines.sort();
     }
 
     
@@ -41,6 +42,7 @@ function Bowl (size, base) {
         }
 
         this.ingredients.push(ingredient);
+        this.ingredients.sort();
     }
 
     this.price = function(size) {
