@@ -1,4 +1,5 @@
-import Bowl from "./bowl.mjs";
+import { Bowl } from "./bowl.mjs";
+
 
 function Order() {
     this.bowls = [];
@@ -12,4 +13,4 @@ function Order() {
     }
 }
 
-export default Order;
+export { Order };

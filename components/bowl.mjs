@@ -7,7 +7,7 @@ const bowl_sizes = {
 }
 
 function Bowl (size, base) {
-    if (!size in bowl_sizes) {
+    if (!(size in bowl_sizes)) {
         throw new Error("Invalid bowl size");
     }
 
@@ -21,7 +21,7 @@ function Bowl (size, base) {
     this.ingredients = [];
 
     this.addProteine = function(proteine) {
-        if (!proteine in proteines) {
+        if (!(proteine in proteines)) {
             throw new Error("Invalid proteine");
         }
         if (this.proteines.length >= this.size.num_proteins){
@@ -33,7 +33,7 @@ function Bowl (size, base) {
 
     
     this.addIngredient = function(ingredient) {
-        if (!ingredient in ingredients) {
+        if (!(ingredient in ingredients)) {
             throw new Error("Invalid ingredient");
         }
         if (this.ingredients.length >= this.size.num_ingredients){
@@ -42,6 +42,21 @@ function Bowl (size, base) {
 
         this.ingredients.push(ingredient);
     }
+
+    this.price = function(size) {
+
+        let price = 0;
+        if (this.size === 'regular') {
+            price = 9;
+        } else if (this.size === 'medium') {
+            price = 11;
+        } else if (this.size === 'big') {
+            price = 14;
+        }
+    
+        return price;
+    }
 }
 
-export default {bowl_sizes, Bowl};
+
+export { Bowl};
