@@ -58,6 +58,10 @@ function Bowl (size, base) {
     
         return price;
     }
+
+    this.toString = function() {
+        return `Bowl size: ${this.size}, base: ${this.base}, proteines: ${this.proteines.join(", ")}, ingredients: ${this.ingredients.join(", ")}`;
+    }
 }
 
 

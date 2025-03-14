@@ -9,7 +9,12 @@ function Order() {
         if (!(bowl instanceof Bowl)) {
             throw new Error("Invalid bowl");
         }
-        this.bowls.push(bowl);
+        const index = this.bowls.findIndex(item => item[0].toString() === bowl.toString());
+        if(index !== -1) {
+            this.bowls[index][1]++;
+        }else{
+            this.bowls.push([bowl, 1]);
+        }
         this.price += bowl.price();
     }
 
