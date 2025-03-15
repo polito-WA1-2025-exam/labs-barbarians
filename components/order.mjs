@@ -1,6 +1,8 @@
 import { Bowl } from "./bowl.mjs";
 
-
+/**
+ * The Order object should be used to handle a order. It stores the current bowls, determine the price and provide method for adjusting the bowls 
+ */
 function Order() {
     // One Order contains several bowls. Thereby, each bowl element is a tuple of the bowl object and its quantity. [bowl, num]
     this.bowls = [];
@@ -13,8 +15,6 @@ function Order() {
      * 
      * @param {Bowl} bowl - The bowl to be added.
      * @throws {Error} Throws an error if the provided object is not an instance of `Bowl`. 
-     * 
-     * 
      * 
      */
     this.addBowl = function(bowl) {
