@@ -1,7 +1,6 @@
 
 import sqlite from 'sqlite3'
 
-
 function DBmanager() {
         
     const db = new sqlite.Database('poke.sqlite', (err) => { if (err) throw err});  
@@ -37,10 +36,10 @@ function DBmanager() {
             db.all(sql, [this.username], (err, rows) => {
                 if (err) {
                     reject(err)
-                } else {
-                
-                    console.log(rows)
-                   
+                } else if(!rows[0].passwordHash=== this.passwordHash) {
+                    reject("Wrong password or username!")
+                }else{
+                    resolve("Sign in :)")
                 }
             })
 
@@ -48,6 +47,6 @@ function DBmanager() {
     }
 }
 
-const user = new DBmanager().authUser("alice", "fbvksfvb")
+const user = new DBmanager().authUser("alice", "fbvksfvb").then(console.log)
  
     
