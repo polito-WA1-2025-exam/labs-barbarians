@@ -1,5 +1,4 @@
 
-
 import sqlite from 'sqlite3'
 
 
@@ -39,13 +38,8 @@ function DBmanager() {
                 if (err) {
                     reject(err)
                 } else {
-                    const result = rows.map((item) => new Answer(item.username, item.passwordHash))
-                    if(!result.lenght){
-                        reject("You need to create an account")
-                    }else { 
-                        console.log(result)
-                        resolve(result)
-                    }
+                
+                    console.log(rows)
                    
                 }
             })
