@@ -76,18 +76,18 @@ const createDatabaseTables = () => {
 
 // Function for reinitalizing the database tables
 
-async function recreateDatabaseTables() {
-const res_del = await deleteDatabaseTables();
-const res_cre = await createDatabaseTables();
+export async function recreateDatabaseTables() {
+    const res_del = await deleteDatabaseTables();
+    const res_cre = await createDatabaseTables();
 
-db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
-    VALUES 
-    ("R", 10 ,9 , 1, 4),
-    ("M", 8 ,11 , 2, 4),
-    ("L", 6 ,14 , 3, 6);
-`);
+    db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
+        VALUES 
+        ("R", 10 ,9 , 1, 4),
+        ("M", 8 ,11 , 2, 4),
+        ("L", 6 ,14 , 3, 6);
+    `);
 
-return db_init.close()
+    return db_init.close()
 }
 
 //Used to reset the database tables if wanted (and to create them first time running)

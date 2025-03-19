@@ -1,11 +1,28 @@
 
 import sqlite from 'sqlite3'
+import { recreateDatabaseTables } from './createDB.mjs';
 
-function DBmanager() {
+
+class DBmanager {
+
+    constructor() {
         
-    const db = new sqlite.Database('poke.sqlite', (err) => { if (err) throw err});  
+    }
 
-    this.addUser = (username,passwordHash) => {
+    async initDBmanager() {
+        try {
+            await recreateDatabaseTables();
+            console.log("Database tables created successfully.");
+        } catch (error) {
+            console.error("Error recreating database tables:", error);
+        }
+        this.db = new sqlite.Database('poke.sqlite', (err) => {
+            if (err) throw err;
+            console.log("Connected to database.");
+        });
+    }
+
+    addUser(username,passwordHash) {
         this.username = username;
         this.passwordHash = passwordHash;
         return new Promise((resolve, reject) => {
@@ -13,7 +30,7 @@ function DBmanager() {
                 `INSERT INTO users(username, passwordHash)
                 VALUES (?,?)`
                 
-            db.run(sql, [this.username, this.passwordHash], function (err) {
+            this.db.run(sql, [this.username, this.passwordHash], function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -23,7 +40,7 @@ function DBmanager() {
             });
         };
     
-    this.authUser = (username,passwordHash) => {
+    authUser(username,passwordHash) {
         this.username = username;
         this.passwordHash = passwordHash;
         return new Promise((resolve, reject) => {
@@ -45,8 +62,22 @@ function DBmanager() {
 
         })
     }
+
+    closeDBmanager() {
+        this.db.close();
+    }
 }
 
-const user = new DBmanager().authUser("alice", "fbvksfvb").then(console.log)
+(async () => {
+    dbManager = new DBmanager();
+
+    await dbManager.init();
+
+    dbManager.addUser("user4", "abc123").then(console.log("user added"))
+
+    dbManager.close()
+
+});
+
  
-    
+ 
