@@ -1,0 +1,22 @@
+{
+  "name": "labs-barbarians",
+  "version": "1.0.0",
+  "description": "- s347610 KALFF HENRY\r - s347369 LÄMSÄ VILHO\r - s347514 ODQVIST CARL\r - S347636 STATTIN ALICE\r - s347367 VIKSTRÖM RASMUS",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polito-WA1-2025-exam/labs-barbarians.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polito-WA1-2025-exam/labs-barbarians/issues"
+  },
+  "homepage": "https://github.com/polito-WA1-2025-exam/labs-barbarians#readme",
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
