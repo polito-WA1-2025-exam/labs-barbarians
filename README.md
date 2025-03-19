@@ -7,7 +7,7 @@
 - S347636 STATTIN ALICE
 - s347367 VIKSTRÖM RASMUS
 
-# Exercise "NAME OF EXERCISE"
+# Exercise **POKE**
 
 # Lab Journal
 
