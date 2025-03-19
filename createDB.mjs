@@ -32,7 +32,7 @@ const createDatabaseTables = () => {
         db.serialize(() => {
             db.run(`CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
-                password TEXT NOT NULL
+                passwordHash TEXT NOT NULL
             )`, (err) => {
                 if (err) reject(err);
             });
