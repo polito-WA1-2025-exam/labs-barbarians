@@ -53,6 +53,7 @@ const createDatabaseTables = () => {
                 size TEXT NOT NULL,
                 base TEXT NOT NULL,
                 proteins TEXT NOT NULL,
+                ingredients TEXT NOT NULL,
                 nrBowls TEXT NOT NULL,
                 price INTEGER NOT NULL,
                 FOREIGN KEY(orderId) REFERENCES orders(id)
@@ -74,23 +75,29 @@ const createDatabaseTables = () => {
     });
 }
 
+
+
 // Function for reinitalizing the database tables
 
-async function recreateDatabaseTables() {
-const res_del = await deleteDatabaseTables();
-const res_cre = await createDatabaseTables();
+export async function recreateDatabaseTables() {
+await deleteDatabaseTables();
+await createDatabaseTables();
 
-db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
-    VALUES 
-    ("R", 10 ,9 , 1, 4),
-    ("M", 8 ,11 , 2, 4),
-    ("L", 6 ,14 , 3, 6);
-`);
-
-return db_init.close()
+await new Promise((resolve, reject) => {
+    db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
+        VALUES 
+        ("R", 10 ,9 , 1, 4),
+        ("M", 8 ,11 , 2, 4),
+        ("L", 6 ,14 , 3, 6);
+    `, (err) => {
+        if (err) reject(err);
+        else resolve();
+    });
+});
+console.log("Database tables have been recreated");
 }
 
 //Used to reset the database tables if wanted (and to create them first time running)
 
-recreateDatabaseTables().then(console.log)
+//recreateDatabaseTables()
 
