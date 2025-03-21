@@ -8,3 +8,10 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/bowlsLeft/R
+
+###
+POST http://localhost:3000/addUser
+Content-Type: application/json
+
+{ "username": "test123", "passwordHash": "test123"}
+

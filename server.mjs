@@ -19,6 +19,19 @@ app.get('/bowlsLeft/:size', (req, res) =>{
     .catch((err) => res.status(500).json(err));
 })	
 
+app.post('/addUser', (req,res) => {
+    const {username, passwordHash} = req.body ;
+
+    console.log("Received:", username, passwordHash);
+    
+    dbManager.addUser(username, passwordHash)
+        .then(user => res.json(user)) // Send back the inserted user info
+        .catch(err => {
+            console.error("Error adding user:", err);
+            res.status(500).json({ error: "User already exists or DB error" });
+        });
+})
+
 app.get('/user/:username/retrieveOrders', (req, res) => {
     dbManager.retriveOrders(req.params.username).then(orders => res.send(orders)).catch(err => res.send(err)) ;
 }) 
