@@ -40,6 +40,13 @@ app.get('/user/:username/:orderId/retrieveBowls', (req, res) => {
     dbManager.retrieveBowls(req.params.orderId).then(bowls => res.send(bowls)).catch(err => res.send(err)) ; 
 })
 
+
+app.post('/addBowls/', (req, res) => {
+    const {orderId, size, base, proteins, ingredients, nrBowls, price} = req.body ;
+
+    dbManager.addBowl(orderId, size, base, proteins, ingredients, nrBowls, price).then( _ => res.send('Bowls added')).catch(err => res.send(err)) ;
+});
+
 app.listen(3000, () =>	console.log('Server	ready'));
 
 

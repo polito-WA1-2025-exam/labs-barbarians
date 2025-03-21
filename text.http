@@ -10,6 +10,20 @@ Content-Type: application/json
 GET http://localhost:3000/bowlsLeft/R
 
 ###
+POST http://localhost:3000/addBowls
+Content-Type: application/json
+
+{
+    "orderId":1, 
+    "size":"R", 
+    "base":"rice", 
+    "proteins": ["tuna"], 
+    "ingredients":["kale", "kale", "kale"], 
+    "nrBowls":1, 
+    "price":12
+}
+
+###
 POST http://localhost:3000/addUser
 Content-Type: application/json
 
