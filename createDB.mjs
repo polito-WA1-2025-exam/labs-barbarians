@@ -6,16 +6,16 @@ const db_init = new sqlite.Database('poke.sqlite', (err) => { if (err) throw err
 const deleteDatabaseTables = () => {
     return new Promise((resolve,reject) => {
         db_init.serialize(() => {
-            db_init.run(`DROP TABLE IF EXISTS users`, (err) => {
-                if (err) reject(err);
-            });
-            db_init.run(`DROP TABLE IF EXISTS orders`, (err) => {
+            db_init.run(`DROP TABLE IF EXISTS bowls_stock`, (err) => {
                 if (err) reject(err);
             });
             db_init.run(`DROP TABLE IF EXISTS bowls_ordered`, (err) => {
                 if (err) reject(err);
             });
-            db_init.run(`DROP TABLE IF EXISTS bowls_stock`, (err) => {
+            db_init.run(`DROP TABLE IF EXISTS orders`, (err) => {
+                if (err) reject(err);
+            });
+            db_init.run(`DROP TABLE IF EXISTS users`, (err) => {
                 if (err) reject(err);
             });
 
@@ -80,21 +80,21 @@ const createDatabaseTables = () => {
 // Function for reinitalizing the database tables
 
 export async function recreateDatabaseTables() {
-await deleteDatabaseTables();
-await createDatabaseTables();
-
-await new Promise((resolve, reject) => {
-    db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
-        VALUES 
-        ("R", 10 ,9 , 1, 4),
-        ("M", 8 ,11 , 2, 4),
-        ("L", 6 ,14 , 3, 6);
-    `, (err) => {
-        if (err) reject(err);
-        else resolve();
-    });
-});
-console.log("Database tables have been recreated");
+    await deleteDatabaseTables();
+    // await createDatabaseTables();
+    /*
+    await new Promise((resolve, reject) => {
+        db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
+            VALUES 
+            ("R", 10 ,9 , 1, 4),
+            ("M", 8 ,11 , 2, 4),
+            ("L", 6 ,14 , 3, 6);
+        `, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });*/
+    console.log("Database tables have been recreated");
 }
 
 //Used to reset the database tables if wanted (and to create them first time running)
