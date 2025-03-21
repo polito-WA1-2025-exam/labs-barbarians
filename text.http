@@ -29,3 +29,30 @@ Content-Type: application/json
 
 { "username": "test123", "passwordHash": "test123"}
 
+###
+POST http://localhost:3000/addOrder
+Content-Type: application/json
+
+{
+  "username": "test123",
+  "order": {
+    "bowls": [
+      {
+        "size": "regular",
+        "base": "rice",
+        "ingredients": ["avocado", "mango", "salad", "carrots"],
+        "proteins": ["tuna"],
+        "nrBowls": 2
+      },
+      {
+        "size": "regular",
+        "base": "rice",
+        "ingredients": ["avocado", "mango", "salad", "carrots"],
+        "proteins": ["chicken"],
+        "nrBowls": 1
+      }
+    ]
+  }
+}
+
+

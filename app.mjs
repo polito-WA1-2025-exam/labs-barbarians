@@ -11,3 +11,6 @@ const dbManager = new DBmanager();
 //     .recreateDatabase()
 //     .then((res) => console.log(res))
 //     .catch((err) => console.error(err));
+
+const order = new Order("test", [new Bowl("small", "brown rice", "chicken", ["lettuce", "tomato"])]);
+

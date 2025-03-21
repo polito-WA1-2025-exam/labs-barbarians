@@ -1,8 +1,11 @@
 import express from 'express'
 import morgan from 'morgan';
 import { DBmanager } from './manageDB.mjs';
+import { Order } from './components/order.mjs';
+import { Bowl } from './components/bowl.mjs';
 
 const dbManager = new DBmanager() ;
+dbManager.recreateDatabase().then(_ => console.log("Database created")).catch(err => console.log(err)) ;
 const app = express() ;
 
 app.use(express.json());
@@ -38,6 +41,32 @@ app.get('/user/:username/retrieveOrders', (req, res) => {
 
 app.get('/user/:username/:orderId/retrieveBowls', (req, res) => {
     dbManager.retrieveBowls(req.params.orderId).then(bowls => res.send(bowls)).catch(err => res.send(err)) ; 
+})
+
+app.post('/addOrder', (req,res)=> {
+    const{username, order} = req.body ;
+    const order_ = new Order();
+    order.bowls.map(element => {
+        for(let i = 0; i < element.nrBowls; i++) {
+            const bowl = new Bowl(element.size, element.base);
+            element.proteins.forEach(protein => bowl.addProteine(protein));
+                
+            element.ingredients.forEach(ingredient => {
+                try {
+                    bowl.addIngredient(ingredient);
+                } catch (error) {
+                    console.error(`Error adding ingredient: ${ingredient}`);
+                }
+            });
+            order_.addBowl(bowl);
+        }
+    });
+    dbManager.addOrder(username, order_)
+    .then(order => res.json(order))
+    .catch(err => {
+        console.error("Error adding order:", err);
+        res.status(500).json({ error: "DB error" });
+    });
 })
 
 

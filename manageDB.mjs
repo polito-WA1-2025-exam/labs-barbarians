@@ -79,8 +79,8 @@ export class DBmanager {
       this.db.all(sql, [size], function (err, rows) {
         if (err) {
           reject(err);
-        } else if (!rows) {
-          reject("Size not found in stock!");
+        } else if (rows.lentgh === 0) {
+          reject(new Error(`No bowls found for size: ${size}`));
         }
         const currentBowls = rows[0].nrBowlsLeft;
         if (!currentBowls) {
@@ -166,15 +166,20 @@ export class DBmanager {
           try {
             let totPrice = 0;
             let totNrBowls = 0;
-
+            let nrLeft = 0;
             // Create order and get the orderId
             const orderId = await this.createOrder(username);
             
-
             // Process all bowls in parallel
             await Promise.all(
-              order.map(async (bowl) => {
-                const nrLeft = await this.bowlsLeft(bowl.size);
+              order.bowls.map(async ([bowl, nrBowls]) => {
+                console.log(`Processing bowl: ${JSON.stringify(bowl)}`);
+                if (bowl.size === "regular"){
+                 nrLeft = await this.bowlsLeft("R");}
+                else if (bowl.size === "medium"){
+                   nrLeft = await this.bowlsLeft("M");}
+                else if (bowl.size === "big"){
+                   nrLeft = await this.bowlsLeft("L");}
                 if (nrLeft < bowl.nrBowls) {
                   throw new Error(`Not enough bowls of size ${bowl.size}`);
                 }
@@ -183,16 +188,16 @@ export class DBmanager {
                   orderId,
                   bowl.size,
                   bowl.base,
-                  bowl.proteins,
+                  bowl.proteines,
                   bowl.ingredients,
-                  bowl.nrBowls,
+                  nrBowls,
                   bowl.price
                 );
 
-                await this.updateBowlsLeft(bowl.size, nrLeft - bowl.nrBowls);
+                await this.updateBowlsLeft(bowl.size, nrLeft - nrBowls);
 
                 totPrice += bowl.price;
-                totNrBowls += bowl.nrBowls;
+                totNrBowls += nrBowls;
               })
             );
 
