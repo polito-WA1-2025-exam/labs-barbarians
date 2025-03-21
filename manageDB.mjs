@@ -218,7 +218,7 @@ export class DBmanager {
       // query DB and return an array of all answers to this question
       const sql = `SELECT * 
                 FROM orders
-                WHERE username = ?`;
+                WHERE userId = ?`;
 
       this.db.all(sql, [username], (err, rows) => {
         if (err) {
