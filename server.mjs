@@ -33,11 +33,11 @@ app.post('/addUser', (req,res) => {
 })
 
 app.get('/user/:username/retrieveOrders', (req, res) => {
-    dbManager.retriveOrders(req.params.username).then(orders => res.send(orders)).catch(err => res.send(err)) ;
+    dbManager.retrieveOrders(req.params.username).then(orders => res.send(orders)).catch(err => res.send(err)) ;
 }) 
 
 app.get('/user/:username/:orderId/retrieveBowls', (req, res) => {
-    dbManager.retriveBowls(req.params.orderId).then(bowls => res.send(bowls)).catch(err => res.send(err)) ; 
+    dbManager.retrieveBowls(req.params.orderId).then(bowls => res.send(bowls)).catch(err => res.send(err)) ; 
 })
 
 app.listen(3000, () =>	console.log('Server	ready'));

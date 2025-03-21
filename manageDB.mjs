@@ -213,7 +213,7 @@ export class DBmanager {
     });
   }
 
-  retriveOrders(username) {
+  retrieveOrders(username) {
     return new Promise((resolve, reject) => {
       // query DB and return an array of all answers to this question
       const sql = `SELECT * 
@@ -232,7 +232,7 @@ export class DBmanager {
     });
   }
 
-  retriveBowls(orderId) {
+  retrieveBowls(orderId) {
     return new Promise((resolve, reject) => {
       // query DB and return an array of all answers to this question
       const sql = `SELECT * 
