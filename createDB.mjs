@@ -81,8 +81,8 @@ const createDatabaseTables = () => {
 
 export async function recreateDatabaseTables() {
     await deleteDatabaseTables();
-    // await createDatabaseTables();
-    /*
+    await createDatabaseTables();
+    
     await new Promise((resolve, reject) => {
         db_init.run(`INSERT INTO bowls_stock(size, nrBowlsLeft, price, nrProteins, nrIngredients)
             VALUES 
@@ -93,7 +93,7 @@ export async function recreateDatabaseTables() {
             if (err) reject(err);
             else resolve();
         });
-    });*/
+    });
     console.log("Database tables have been recreated");
 }
 
