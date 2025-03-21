@@ -1,0 +1,4 @@
+GET http://localhost:3000/user/auth/admin/admin
+Content-Type: application/json
+
+###

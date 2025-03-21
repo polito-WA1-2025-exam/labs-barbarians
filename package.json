@@ -18,6 +18,8 @@
   "homepage": "https://github.com/polito-WA1-2025-exam/labs-barbarians#readme",
   "dependencies": {
     "dayjs": "^1.11.13",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
     "sqlite3": "^5.1.7"
   }
 }

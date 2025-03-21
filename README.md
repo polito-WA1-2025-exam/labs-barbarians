@@ -129,3 +129,20 @@ ROLLBACK → Undoes all changes if any step fails.
 # Note!
 
 No implementation is made for calculating the correct total price that is added into the orders database. Right now the price is only calculated by adding the price for each bowl. The calculation for each bowl is also not implemented yet!
+
+# API
+
+The following requests should be possible
+## Retrieve Data
+- authUser
+- bowlsLeft
+- retrieveOrder
+- retrieveBowls
+
+## Push Data
+- addUser()
+- addOrder()
+- addBowl()
+
+## No calls
+- deleteUser()
