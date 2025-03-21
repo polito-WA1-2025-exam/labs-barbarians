@@ -3,4 +3,8 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:3000/user/admin/retrieveOrders
+Content-Type: application/json
+
+###
 GET http://localhost:3000/bowlsLeft/R

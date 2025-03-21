@@ -19,6 +19,10 @@ app.get('/bowlsLeft/:size', (req, res) =>{
     .catch((err) => res.status(500).json(err));
 })	
 
+app.get('/user/:username/retrieveOrders', (req, res) => {
+    dbManager.retriveOrders(req.params.username).then(orders => res.send(orders)).catch(err => res.send(err)) ;
+}) 
+
 app.listen(3000, () =>	console.log('Server	ready'));
 
 
