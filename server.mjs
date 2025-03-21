@@ -12,4 +12,19 @@ app.get('/user/auth/:username/:passwordHash', (req, res) =>	{
     dbManager.authUser(req.params.username, req.params.passwordHash).then( _ => res.send('User authenticated')).catch(err => res.send("User not authenticated")) ;
 }) ;
 
+app.get('/bowlsLeft/:size', (req, res) =>{
+    const size = req.params.size 
+    dbManager.bowlsLeft(size)
+    .then((result) => res.json(result))
+    .catch((err) => res.status(500).json(err));
+})	
+
 app.listen(3000, () =>	console.log('Server	ready'));
+
+
+
+ 
+
+
+
+
