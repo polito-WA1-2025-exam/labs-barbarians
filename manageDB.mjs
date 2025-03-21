@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { recreateDatabaseTables } from "./createDB.mjs";
 
-class DBmanager {
+export class DBmanager {
   constructor() {
     this.db = new sqlite.Database("poke.sqlite", async (err) => {
       if (err) {
@@ -257,101 +257,101 @@ class DBmanager {
   }
 }
 
-(async () => {
-  const resetDB = true; //Set to false in order to keep information in DB 
-  const dbManager = new DBmanager();
-  if (resetDB) {
-    await dbManager
-      .recreateDatabase()
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
-  }
-  await dbManager
-    .addUser("user5", "cba321")
-    .then((res) => console.log("User added:", res))
-    .catch((err) => console.error("Error adding user:", err));
+// (async () => {
+//   const resetDB = true; //Set to false in order to keep information in DB 
+//   const dbManager = new DBmanager();
+//   if (resetDB) {
+//     await dbManager
+//       .recreateDatabase()
+//       .then((res) => console.log(res))
+//       .catch((err) => console.error(err));
+//   }
+//   await dbManager
+//     .addUser("user5", "cba321")
+//     .then((res) => console.log("User added:", res))
+//     .catch((err) => console.error("Error adding user:", err));
 
-  await dbManager
-    .addUser("user2", "cba321")
-    .then((res) => console.log("User added:", res))
-    .catch((err) => console.error("Error adding user:", err));
+//   await dbManager
+//     .addUser("user2", "cba321")
+//     .then((res) => console.log("User added:", res))
+//     .catch((err) => console.error("Error adding user:", err));
 
-  await dbManager
-    .addUser("user4", "abc123")
-    .then((msg) => console.log(msg))
-    .catch((err) => console.error(err));
+//   await dbManager
+//     .addUser("user4", "abc123")
+//     .then((msg) => console.log(msg))
+//     .catch((err) => console.error(err));
 
-  await dbManager
-    .authUser("user4", "abc123")
-    .then((msg) => console.log(msg))
-    .catch((err) => console.error(err));
-  /*
-Only used all the function when creating them, will not be used directly later
-  await dbManager
-    .createOrder("user5", 17, 1)
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
-  await dbManager
-    .bowlsLeft("R")
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
+//   await dbManager
+//     .authUser("user4", "abc123")
+//     .then((msg) => console.log(msg))
+//     .catch((err) => console.error(err));
+//   /*
+// Only used all the function when creating them, will not be used directly later
+//   await dbManager
+//     .createOrder("user5", 17, 1)
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
+//   await dbManager
+//     .bowlsLeft("R")
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
 
-  await dbManager
-    .updateOrder(5, 13, 2)
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
-  await dbManager
-    .addBowl(5, "R", "rice", "[tuna,tune]", "[kale, kale, kale]", 1, 12)
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
-*/
-  await dbManager
-    .deleteUser("user4")
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
+//   await dbManager
+//     .updateOrder(5, 13, 2)
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
+//   await dbManager
+//     .addBowl(5, "R", "rice", "[tuna,tune]", "[kale, kale, kale]", 1, 12)
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
+// */
+//   await dbManager
+//     .deleteUser("user4")
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
 
-  const order = [
-    {
-      size: "R",
-      base: "rice",
-      proteins: ["chicken"],
-      ingredients: ["kale", "salad"],
-      nrBowls: 2,
-      price: 9,
-    },
-    {
-      size: "M",
-      base: "noodles",
-      proteins: ["beef"],
-      ingredients: ["kale", "salad", "avocado"],
-      nrBowls: 3,
-      price: 11,
-    },
-    {
-      size: "L",
-      base: "quinoa",
-      proteins: ["salmon", "tuna"],
-      ingredients: ["kale", "avocado"],
-      nrBowls: 1,
-      price: 14,
-    },
-  ];
-  await dbManager
-    .addOrder("user5", order)
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
+//   const order = [
+//     {
+//       size: "R",
+//       base: "rice",
+//       proteins: ["chicken"],
+//       ingredients: ["kale", "salad"],
+//       nrBowls: 2,
+//       price: 9,
+//     },
+//     {
+//       size: "M",
+//       base: "noodles",
+//       proteins: ["beef"],
+//       ingredients: ["kale", "salad", "avocado"],
+//       nrBowls: 3,
+//       price: 11,
+//     },
+//     {
+//       size: "L",
+//       base: "quinoa",
+//       proteins: ["salmon", "tuna"],
+//       ingredients: ["kale", "avocado"],
+//       nrBowls: 1,
+//       price: 14,
+//     },
+//   ];
+//   await dbManager
+//     .addOrder("user5", order)
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
 
-  await dbManager
-    .retriveOrders("user5")
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
+//   await dbManager
+//     .retriveOrders("user5")
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
 
-  await dbManager
-    .retriveBowls(1)
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
+//   await dbManager
+//     .retriveBowls(1)
+//     .then((res) => console.log(res))
+//     .catch((err) => console.error(err));
 
-  dbManager.closeDBmanager();
-})();
+//   dbManager.closeDBmanager();
+// })();
 
-export default DBmanager;
+// export default DBmanager;
