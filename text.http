@@ -41,15 +41,17 @@ Content-Type: application/json
         "size": "regular",
         "base": "rice",
         "ingredients": ["avocado", "mango", "salad", "carrots"],
-        "proteins": ["tuna"],
-        "nrBowls": 2
+        "proteins": "tuna",
+        "nrBowls": 2,
+        "price": 18
       },
       {
         "size": "regular",
         "base": "rice",
         "ingredients": ["avocado", "mango", "salad", "carrots"],
-        "proteins": ["chicken"],
-        "nrBowls": 1
+        "proteins": "chicken",
+        "nrBowls": 1,
+        "price": 9
       }
     ]
   }

@@ -172,7 +172,7 @@ export class DBmanager {
             
             // Process all bowls in parallel
             await Promise.all(
-              order.bowls.map(async ([bowl, nrBowls]) => {
+              order.bowls.map(async (bowl) => {
                 console.log(`Processing bowl: ${JSON.stringify(bowl)}`);
                 if (bowl.size === "regular"){
                  nrLeft = await this.bowlsLeft("R");}
@@ -188,19 +188,18 @@ export class DBmanager {
                   orderId,
                   bowl.size,
                   bowl.base,
-                  bowl.proteines,
+                  bowl.proteins,
                   bowl.ingredients,
-                  nrBowls,
+                  bowl.nrBowls,
                   bowl.price
                 );
 
-                await this.updateBowlsLeft(bowl.size, nrLeft - nrBowls);
+                await this.updateBowlsLeft(bowl.size, nrLeft - bowl.nrBowls);
 
                 totPrice += bowl.price;
-                totNrBowls += nrBowls;
+                totNrBowls += bowl.nrBowls;
               })
             );
-
             // Update the order with final totals
             await this.updateOrder(orderId, totPrice, totNrBowls);
 
