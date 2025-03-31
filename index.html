@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PokéBowl App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PokéBowl App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Create Bowl</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Order</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <h2 class="text-center">Create Your PokéBowl</h2>
+        <form id="bowlForm">
+            <div class="mb-3">
+                <label for="size" class="form-label">Choose Size</label>
+                <select class="form-select" id="size" onchange="updateConstraints()">
+                    <option value="R">Regular</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="base" class="form-label">Choose Base</label>
+                <select class="form-select" id="base">
+                    <option>Rice</option>
+                    <option>Black Rice</option>
+                    <option>Salad</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Protein</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proteinInputs">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mb-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Topping</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="toppingInputs">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Number of Bowls</label>
+                <select class="form-select" id="quantity">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addToOrder()">Create Bowl</button>
+        </form>
+    </div>
+    
+    <div class="container mt-4">
+        <h2 class="text-center">Order Summary</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Size</th>
+                    <th>Base</th>
+                    <th>Proteins</th>
+                    <th>Toppings</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="orderList">
+                <tr><td colspan="5" class="text-center">No orders yet.</td></tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-3">
+            <button class="btn btn-success" onclick="submitOrder()">Submit Order</button>
+        </div>
+    </div>
+    
+    <footer class="bg-primary text-white text-center p-3 mt-4">
+        &copy; 2025 PokéBowl App. All rights reserved.
+    </footer>
+
+    <script>
+        function populateDropdowns(list, containerId, maxItems) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            list.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item}</td>
+                    <td>
+                        <select class="form-select" id="${containerId}-${item}">
+                            ${Array.from({length: maxItems + 1}, (_, i) => `<option value="${i}">${i}</option>`).join('')}
+                        </select>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function updateConstraints() {
+            const size = document.getElementById('size').value;
+            let maxToppings = size === 'R' ? 2 : size === 'M' ? 3 : 4;
+            let maxProteins = size === 'R' ? 1 : size === 'M' ? 2 : 3;
+            populateDropdowns(["Salmon", "Tuna", "Chicken", "Tofu"], "proteinInputs", maxProteins);
+            populateDropdowns(["Avocado", "Ananas", "Cashew Nuts", "Mango", "Peppers"], "toppingInputs", maxToppings);
+        }
+
+        function addToOrder() {
+            const size = document.getElementById('size').value;
+            const base = document.getElementById('base').value;
+            const quantity = document.getElementById('quantity').value;
+            const proteins = Array.from(document.querySelectorAll('#proteinInputs select')).map(el => `${el.id.split('-')[1]} (${el.value})`).filter(el => !el.includes('(0)'));
+            const toppings = Array.from(document.querySelectorAll('#toppingInputs select')).map(el => `${el.id.split('-')[1]} (${el.value})`).filter(el => !el.includes('(0)'));
+            
+            const orderList = document.getElementById('orderList');
+            orderList.innerHTML += `<tr><td>${size}</td><td>${base}</td><td>${proteins.join(', ')}</td><td>${toppings.join(', ')}</td><td>${quantity}</td></tr>`;
+        }
+    
+        updateConstraints();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
