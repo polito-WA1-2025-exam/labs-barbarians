@@ -18,7 +18,7 @@ function DisplayOrderHistory(props){
     return (
       <>
         <h1 className="text-center mt-5">Order History</h1>
-        <Table responsive>
+        <Table responsive hover>
           <thead>
             <tr>
               <th>Number of Bowls</th>
