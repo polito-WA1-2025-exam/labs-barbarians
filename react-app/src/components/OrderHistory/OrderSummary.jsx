@@ -15,6 +15,7 @@ function OrderSummary(props){
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <h4>Price: {order.price} €</h4>
           <Table responsive>
           <thead>
             <tr>
