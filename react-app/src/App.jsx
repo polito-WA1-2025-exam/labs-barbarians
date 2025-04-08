@@ -4,6 +4,7 @@ import ProfileModal from './components/ProfileModal';
 import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
 import {Bowl, generateBowls} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
+import OrderSummary from './components/OrderSummary';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { format } from 'morgan';
@@ -39,6 +40,23 @@ function App() {
     setShowProfile(false); // Close the profile popup
   };
   const orders = generateOrders();
+// Test props
+  const bowls = [
+    {
+      size: 'Large',
+      base: 'Rice',
+      proteines: ['Chicken'],
+      ingredients: ['Avocado', 'Mango'],
+      price: () => 12.99,
+    },
+    {
+      size: 'Medium',
+      base: 'Salad',
+      proteines: ['Salmon'],
+      ingredients: ['Tomatoes', 'Corn'],
+      price: () => 10.99,
+    },
+  ];
 
   return (
     <>
@@ -49,6 +67,7 @@ function App() {
         username={username}
         onDeleteProfile={handleDeleteProfile}
       />
+      <OrderSummary bowls={bowls}/>
       <DisplayOrderHistory orders={orders} />
     </>
   );

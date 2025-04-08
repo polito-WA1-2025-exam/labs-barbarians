@@ -22,11 +22,6 @@ function NavBar({ username, setUser, setShowProfile }) {
           PokeBowl App
         </Navbar.Brand>
         <Nav className="me-auto">
-          {username && (
-            <Nav.Link href="#OrderHistory" className="text-white">
-              Order History
-            </Nav.Link>
-          )}
         </Nav>
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
