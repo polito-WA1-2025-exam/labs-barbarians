@@ -5,6 +5,7 @@ import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
 import {Bowl, generateBowls} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import OrderSummary from './components/OrderSummary';
+import CreateBowl from './components/create_bowl';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { format } from 'morgan';
@@ -67,6 +68,7 @@ function App() {
         username={username}
         onDeleteProfile={handleDeleteProfile}
       />
+      <CreateBowl />
       <OrderSummary bowls={bowls}/>
       <DisplayOrderHistory orders={orders} />
     </>
