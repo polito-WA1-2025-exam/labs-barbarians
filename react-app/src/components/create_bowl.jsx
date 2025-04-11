@@ -17,19 +17,82 @@ function CreateBowl() {
 
     /* Maximum number of proteins and toppings in relation to bowl size are defined */
     const sizeConstraints = {
-        R: { maxProteins: 1, maxToppings: 2 },
-        M: { maxProteins: 2, maxToppings: 3 },
-        L: { maxProteins: 3, maxToppings: 4 },
+        R: { maxProteins: 1, maxToppings: 4 },
+        M: { maxProteins: 2, maxToppings: 4 },
+        L: { maxProteins: 3, maxToppings: 6 },
     };
 
-    /* Functions to handle change of form values */
+    // Calculate total selected proteins and toppings
+    const totalSelectedProteins = Object.values(proteinSelections).reduce((sum, qty) => sum + qty, 0);
+    const totalSelectedToppings = Object.values(toppingSelections).reduce((sum, qty) => sum + qty, 0);
+
+    // defining constants for maximum number of proteins and toppings based on size
+    const maxProteins = sizeConstraints[size].maxProteins;
+    const maxToppings = sizeConstraints[size].maxToppings;
+
+    // remaining proteins and toppings based on selections
+    const remainingProteins = maxProteins - totalSelectedProteins;
+    const remainingToppings = maxToppings - totalSelectedToppings
+
+    
+    // A function to automatically adjust protein and topping selections when the bowl
+    // size is changed to a smaller one. This keeps the ingredients within the restrictions.
+
+    const handleSizeChange = (newSize) => {
+
+        setSize(newSize); // setting state variable to new size
+        const newMaxProteins = sizeConstraints[newSize].maxProteins;
+        const newMaxToppings = sizeConstraints[newSize].maxToppings;
+
+        // Trim extra selections for proteins
+        let adjustedProteins = {};
+        let remainingProteins = newMaxProteins;
+        for (let protein of Object.keys(proteinSelections)) {
+            if (remainingProteins > 0) {
+                let allowed = Math.min(proteinSelections[protein], remainingProteins);
+                adjustedProteins[protein] = allowed;
+                remainingProteins -= allowed;
+            }
+        }
+
+        // Trim extra selections for toppings
+        let adjustedToppings = {};
+        let remainingToppings = newMaxToppings;
+        for (let topping of Object.keys(toppingSelections)) {
+            if (remainingToppings > 0) {
+                let allowed = Math.min(toppingSelections[topping], remainingToppings);
+                adjustedToppings[topping] = allowed;
+                remainingToppings -= allowed;
+            }
+        }
+
+        setProteinSelections(adjustedProteins);
+        setToppingSelections(adjustedToppings);
+    };
+
+
+    /* Functions to handle change of protein and topping values in forms */
+    
     const handleProteinChange = (protein, value) => {
-        setProteinSelections(prev => ({ ...prev, [protein]: Number(value) }));
+        const newQty = Number(value);
+        const newTotal = totalSelectedProteins - (proteinSelections[protein] || 0) + newQty;
+
+        if (newTotal <= maxProteins) {
+            setProteinSelections(prev => ({ ...prev, [protein]: newQty }));
+        }
     };
 
     const handleToppingChange = (topping, value) => {
-        setToppingSelections(prev => ({ ...prev, [topping]: Number(value) }));
+        const newQty = Number(value);
+        const newTotal = totalSelectedToppings - (toppingSelections[topping] || 0) + newQty;
+
+        if (newTotal <= maxToppings) {
+            setToppingSelections(prev => ({ ...prev, [topping]: newQty }));
+        }
     };
+
+
+
 
 
     return (
@@ -43,7 +106,7 @@ function CreateBowl() {
 
             <Form.Group className="mb-3 w-50 mx-auto">
                 <Form.Label><strong>Choose your size</strong></Form.Label>
-                <Form.Select aria-label="Choose size" value={size} onChange={(e) => setSize(e.target.value)}>
+                <Form.Select aria-label="Choose size" value={size} onChange={(e) => handleSizeChange(e.target.value)}>
                     <option value="R">Regular</option>
                     <option value="M">Medium</option>
                     <option value="L">Large</option>
@@ -66,7 +129,8 @@ function CreateBowl() {
             Proteins are mapped onto each row from "proteinsList". Form is inserted in second column, where the user chosen protein
             is stored in "proteinSelections" state. Choice of protein numbers is depedent on state variable "size".
             */}
-            <h4 className="text-center mt-4">Choose Proteins</h4>
+            <h4 className="text-center mt-4">Choose Proteins (Max: {maxProteins})</h4>
+            <p className="text-center text-muted">Remaining: {remainingProteins}</p>
             <div className="d-flex justify-content-center">
                 <Table striped bordered hover="w-75">
                     <thead>
@@ -83,7 +147,11 @@ function CreateBowl() {
                                 <td>{protein}</td>
                                 <td>
                                     <Form.Select value={proteinSelections[protein] || 0} onChange={(e) => handleProteinChange(protein, e.target.value)}>
-                                        {[...Array(sizeConstraints[size].maxProteins + 1).keys()].map(i => (
+                                        
+                                        {/* Drop down selection is restricted to remaining proteins*/}
+
+                                        {[...Array(Math.min(maxProteins - totalSelectedProteins + (proteinSelections[protein] || 0), maxProteins) + 1).keys()]
+                                        .map(i => (
                                             <option key={i} value={i}>{i}</option>
                                         ))}
                                     </Form.Select>
@@ -97,7 +165,8 @@ function CreateBowl() {
             {/* Topping Table: 
             Applied logic is identical to proteins table.
             */}
-            <h4 className="text-center mt-4">Choose Toppings</h4>
+            <h4 className="text-center mt-4">Choose Toppings (Max: {maxToppings})</h4>
+            <p className="text-center text-muted">Remaining: {remainingToppings}</p>
             <div className="d-flex justify-content-center">
                 <Table striped bordered hover>
                     <thead>
@@ -112,7 +181,11 @@ function CreateBowl() {
                                 <td>{topping}</td>
                                 <td>
                                     <Form.Select value={toppingSelections[topping] || 0} onChange={(e) => handleToppingChange(topping, e.target.value)}>
-                                        {[...Array(sizeConstraints[size].maxToppings + 1).keys()].map(i => (
+
+                                        {/* Drop down selection is restricted to remaining toppings*/}
+
+                                        {[...Array(Math.min(maxToppings - totalSelectedToppings + (toppingSelections[topping] || 0), maxToppings) + 1).keys()]
+                                        .map(i => (
                                             <option key={i} value={i}>{i}</option>
                                         ))}
                                     </Form.Select>
@@ -136,7 +209,7 @@ function CreateBowl() {
             </Form.Group>
 
             {/* Submit Button */}
-            <Button variant="success" className="mt-3 px-5 py-2">Order Now</Button>
+            <Button variant="success" className="mt-3 px-5 py-2">Add bowl to order</Button>
 
             {/* No content yet. Could call an external function here to create an
             order object using data stored in state variables. Afterwards chosen options should be reset*/}
