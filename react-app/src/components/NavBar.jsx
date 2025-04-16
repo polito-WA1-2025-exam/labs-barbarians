@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -18,11 +19,10 @@ function NavBar({ username, setUser, setShowProfile }) {
   return (
     <Navbar expand="lg" className="fixed-top bg-primary">
       <Container>
-        <Navbar.Brand href="#home" className="text-white">
+        <Navbar.Brand as={Link} to="/" className="text-white">
           PokeBowl App
         </Navbar.Brand>
-        <Nav className="me-auto">
-        </Nav>
+        <Nav className="me-auto"></Nav>
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
             {username ? (
@@ -37,16 +37,19 @@ function NavBar({ username, setUser, setShowProfile }) {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={handleProfileClick}>Profile</Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/past-orders">
+                    Past Orders
+                  </Dropdown.Item>
                   <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <a href="#login" title="Login" className="text-white">
+              <Link to="/login" title="Login" className="text-white">
                 <i
                   className="bi bi-box-arrow-in-left"
                   style={{ fontSize: '1.5rem' }}
                 ></i>
-              </a>
+              </Link>
             )}
           </Navbar.Text>
         </Navbar.Collapse>

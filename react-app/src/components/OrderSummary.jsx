@@ -8,6 +8,13 @@ function OrderSummary(props) {
         console.log('Order submit button pressed!');
     };
 
+    const calculateTotalPrice = () => {
+        return bowls.reduce((total, bowl) => {
+            return total + bowl.numberOfBowls * bowl.price();
+        }, 0);
+    };
+    const totalPrice = calculateTotalPrice();
+
     return (
         <>
             <h2>Order Summary</h2>
@@ -19,6 +26,7 @@ function OrderSummary(props) {
                     <th>Base</th>
                     <th>Proteins</th>
                     <th>Toppings</th>
+                    <th>Number of Bowls</th>
                     <th>Price</th>
                     </tr>
                 </thead>
@@ -29,7 +37,8 @@ function OrderSummary(props) {
                         <td>{bowl.base}</td>
                         <td>{Array.isArray(bowl.proteines) ? bowl.proteines.join(', ') : ''}</td>
                         <td>{Array.isArray(bowl.ingredients) ? bowl.ingredients.join(', ') : ''}</td>
-                        <td>{bowl.price()} €</td>
+                        <td>{bowl.numberOfBowls}</td>
+                        <td>{  totalPrice} €</td>
                     </tr>
                     ))}
                 </tbody>

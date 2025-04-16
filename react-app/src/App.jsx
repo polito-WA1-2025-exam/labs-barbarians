@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import NavBar from './components/NavBar';
-import ProfileModal from './components/ProfileModal';
-import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {Bowl, generateBowls} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
-import OrderSummary from './components/OrderSummary';
+import NavBar from './components/NavBar';
+import ProfileModal from './components/ProfileModal';
 import CreateBowl from './components/create_bowl';
+import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
+import LoginPage from './components/login';
+import OrderSummary from './components/OrderSummary';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { format } from 'morgan';
 
 function generateOrders(){
@@ -31,47 +34,71 @@ function generateOrders(){
   return orders;
 }
 
-function App() {
-  const [username, setUsername] = useState('testUser'); // Replace with null for no user
-  const [showProfile, setShowProfile] = useState(false); // State to control profile popup visibility
 
+function App() {
+  const [username, setUsername] = useState('testUser'); // User state
+  const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
+  const [currentOrder, setCurrentOrder] = useState([]); // Current order in progress
+  const [pastOrders, setPastOrders] = useState([]); // Mock past orders
+  useEffect(() => {
+    const orders = generateOrders();
+    setPastOrders(orders);
+  }, []);
   const handleDeleteProfile = () => {
     alert('Profile deleted!');
-    setUsername(null); // Clear the username state
-    setShowProfile(false); // Close the profile popup
+    setUsername(null);
+    setShowProfile(false);
   };
-  const orders = generateOrders();
-// Test props
-  const bowls = [
-    {
-      size: 'Large',
-      base: 'Rice',
-      proteines: ['Chicken'],
-      ingredients: ['Avocado', 'Mango'],
-      price: () => 12.99,
-    },
-    {
-      size: 'Medium',
-      base: 'Salad',
-      proteines: ['Salmon'],
-      ingredients: ['Tomatoes', 'Corn'],
-      price: () => 10.99,
-    },
-  ];
+
+  const handleAddToOrder = (bowl) => {
+    setCurrentOrder((prevOrder) => [...prevOrder, bowl]);
+  };
 
   return (
-    <>
+    <Router>
+      {/* Navigation Bar */}
       <NavBar username={username} setUser={setUsername} setShowProfile={setShowProfile} />
+
+      {/* Profile Modal */}
       <ProfileModal
         show={showProfile}
         onHide={() => setShowProfile(false)}
         username={username}
         onDeleteProfile={handleDeleteProfile}
       />
-      <CreateBowl />
-      <OrderSummary bowls={bowls}/>
-      <DisplayOrderHistory orders={orders} />
-    </>
+
+      {/* Main Content */}
+      <div className="container mt-4">
+        <Routes>
+          {/* Main Page: Create Bowl and Current Order */}
+          <Route
+            path="/"
+            element={
+              <>
+                <CreateBowl addToOrder={handleAddToOrder} />
+                <OrderSummary bowls={currentOrder} />
+              </>
+            }
+          />
+
+          {/* Past Orders Page */}
+          <Route
+            path="/past-orders"
+            element={
+              <DisplayOrderHistory orders={pastOrders} />
+            }
+          />
+
+          {/* Login Page */}
+          <Route
+            path="/login"
+            element={
+              <LoginPage setUser={setUsername} />
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
