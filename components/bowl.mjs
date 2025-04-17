@@ -91,7 +91,7 @@ function Bowl (size, base) {
      * @returns The characteristic string for this bowl.
      */
     this.toString = function() {
-        return `Bowl size: ${this.size}, base: ${this.base}, proteines: ${this.proteines.join(", ")}, ingredients: ${this.ingredients.join(", ")}`;
+        return `Bowl size: ${this.size}, base: ${this.base}, proteines: ${this.proteines.sort().join(", ")}, ingredients: ${this.ingredients.sort().join(", ")}`;
     }
 }
 

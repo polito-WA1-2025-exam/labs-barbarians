@@ -32,6 +32,13 @@ function OrderSummary(props) {
                         <td>{bowl.price()} €</td>
                     </tr>
                     ))}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>total cost: </td>
+                        <td> €</td>
+                    </tr>
                 </tbody>
             </table>
 

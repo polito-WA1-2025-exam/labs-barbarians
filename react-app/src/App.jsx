@@ -27,7 +27,7 @@ function generateOrders(){
   order3.addBowl(bowls[8]);
   let order4 = new Order(4);
   order4.addBowl(bowls[9]);
-  const orders = [order1, order2, order3, order4];
+  const orders = [order1, order2, order3, order4];  
   return orders;
 }
 
@@ -58,6 +58,8 @@ function App() {
       price: () => 10.99,
     },
   ];
+
+  console.log(bowls[0].toString())
 
   return (
     <>

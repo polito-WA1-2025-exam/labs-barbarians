@@ -91,7 +91,7 @@ function Bowl (size, base) {
      * @returns The characteristic string for this bowl.
      */
     this.toString = function() {
-        return `Bowl size: ${this.size}, base: ${this.base}, proteines: ${this.proteines.join(", ")}, ingredients: ${this.ingredients.join(", ")}`;
+        return `Bowl size: ${this.size.str}, base: ${this.base}, proteines: ${this.proteines.sort().join(", ")}, ingredients: ${this.ingredients.sort().join(", ")}`;
     }
 }
 
@@ -121,7 +121,7 @@ function generateBowls(count) {
         for (let ing = 0; ing < sizeObj.num_ingredients; ing++) {
             bowl.addIngredient(shuffledIngredients[ing]);
         }
-        console.log(bowl);
+        // console.log(bowl);
 
         bowlArray.push(bowl);
     }
