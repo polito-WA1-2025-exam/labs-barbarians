@@ -21,6 +21,8 @@ function DisplayOrderHistory(props){
         <Table responsive hover>
           <thead>
             <tr>
+              <th>OrderId</th>
+              <th>Date</th>
               <th>Number of Bowls</th>
               <th>Price</th>
             </tr>
