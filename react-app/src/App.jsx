@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {Bowl, generateBowls} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import NavBar from './components/NavBar';
-import ProfileModal from './components/ProfileModal';
-import CreateBowl from './components/create_bowl';
+import ProfileModal from './components/Profile/ProfileModal';
+import BowlDisplay from './components/Order/BowlDisplay';
 import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
-import LoginPage from './components/login';
-import OrderSummary from './components/OrderSummary';
+import LoginPage from './components/Profile/LoginDisplay';
+import OrderSummary from './components/Order/OrderSummary';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -75,7 +75,7 @@ function App() {
             path="/"
             element={
               <>
-                <CreateBowl addToOrder={handleAddToOrder} />
+                <BowlDisplay addToOrder={handleAddToOrder} />
                 <OrderSummary bowls={currentOrder} />
               </>
             }

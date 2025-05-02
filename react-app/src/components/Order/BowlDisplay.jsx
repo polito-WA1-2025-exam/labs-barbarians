@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 const proteinsList = ["Salmon", "Tuna", "Chicken", "Tofu"];
 const toppingsList = ["Avocado", "Ananas", "Cashew Nuts", "Mango", "Peppers"];
 
-function CreateBowl({ addToOrder }) {
+function BowlDisplay({ addToOrder }) {
     const [size, setSize] = useState("R");
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
@@ -220,4 +220,4 @@ function CreateBowl({ addToOrder }) {
     );
 }
 
-export default CreateBowl;
+export default BowlDisplay;
