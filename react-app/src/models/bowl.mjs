@@ -4,9 +4,9 @@ import {bases, proteines, ingredients} from "./ingredients.mjs";
  * On the one hand this object stores all size for a bowl. On the other hand it stores also the number of proteins and ingredients for each bowl size.
  */
 const bowl_sizes = {
-    regular: {str:"regular", num_proteins: 1, num_ingredients: 4},
-    medium: {str:"medium", num_proteins: 2, num_ingredients: 4},
-    big: {str:"big", num_proteins: 3, num_ingredients: 6}
+    regular: {str:"regular", num_proteins: 1, num_ingredients: 4, price: 9},
+    medium: {str:"medium", num_proteins: 2, num_ingredients: 4, price: 11},
+    big: {str:"big", num_proteins: 3, num_ingredients: 6, price: 14}
 }
 
 /**
