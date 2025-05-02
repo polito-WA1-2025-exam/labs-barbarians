@@ -1,19 +1,30 @@
 import './OrderSummary.css';
 
 function OrderSummary(props) {
+    const bowls = props.bowls;
 
-    const bowls = props.bowls
+    const calculateTotalPrice = () => {
+        // Calculate the total price for all bowls
+        const totalPriceWithoutDiscount = bowls.reduce((total, bowl) => {
+            return total + parseFloat(bowl.price); // Sum up the price of all bowls
+        }, 0);
+
+        // Calculate the total number of bowls
+        const totalBowls = bowls.reduce((total, bowl) => total + bowl.numberOfBowls, 0);
+
+        // Apply a 10% discount if more than 5 bowls are ordered
+        if (totalBowls >= 4) {
+            return totalPriceWithoutDiscount * 0.9; // Apply 10% discount
+        }
+
+        return totalPriceWithoutDiscount;
+    };
+
+    const totalPrice = calculateTotalPrice();
 
     const SubmitOrder = () => {
         console.log('Order submit button pressed!');
     };
-
-    const calculateTotalPrice = () => {
-        return bowls.reduce((total, bowl) => {
-            return total + bowl.numberOfBowls * bowl.price();
-        }, 0);
-    };
-    const totalPrice = calculateTotalPrice();
 
     return (
         <>
@@ -22,34 +33,33 @@ function OrderSummary(props) {
             <table>
                 <thead>
                     <tr>
-                    <th>Size</th>
-                    <th>Base</th>
-                    <th>Proteins</th>
-                    <th>Toppings</th>
-                    <th>Number of Bowls</th>
-                    <th>Price</th>
+                        <th>Size</th>
+                        <th>Base</th>
+                        <th>Proteins</th>
+                        <th>Toppings</th>
+                        <th>Number of Bowls</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody>
                     {bowls.map((bowl, index) => (
-                    <tr key={index}>
-                        <td>{bowl.size}</td>
-                        <td>{bowl.base}</td>
-                        <td>{Array.isArray(bowl.proteines) ? bowl.proteines.join(', ') : ''}</td>
-                        <td>{Array.isArray(bowl.ingredients) ? bowl.ingredients.join(', ') : ''}</td>
-                        <td>{bowl.numberOfBowls}</td>
-                        <td>{  totalPrice} €</td>
-                    </tr>
+                        <tr key={index}>
+                            <td>{bowl.size}</td>
+                            <td>{bowl.base}</td>
+                            <td>{Array.isArray(bowl.proteines) ? bowl.proteines.join(', ') : ''}</td>
+                            <td>{Array.isArray(bowl.ingredients) ? bowl.ingredients.join(', ') : ''}</td>
+                            <td>{bowl.numberOfBowls}</td>
+                            <td>{parseFloat(bowl.price).toFixed(2)}€</td>
+                        </tr>
                     ))}
                 </tbody>
             </table>
 
-            <button className="button" onClick={SubmitOrder}>Submit Order</button>
-            
+            <h3>Total Price: €{totalPrice.toFixed(2)}</h3>
+
+            <button variant="success" className="button" onClick={SubmitOrder}>Submit Order</button>
         </>
-    )
-
+    );
 }
-
 
 export default OrderSummary;
