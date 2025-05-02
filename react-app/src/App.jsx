@@ -7,7 +7,8 @@ import ProfileModal from './components/Profile/ProfileModal';
 import BowlDisplay from './components/Order/BowlDisplay';
 import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
 import LoginPage from './components/Profile/LoginDisplay';
-import OrderSummary from './components/Order/OrderSummary';
+// import OrderSummary from './components/Order/OrderSummary';
+import OrderDisplay from './components/Order/OrderDisplay';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -74,12 +75,10 @@ function App() {
           <Route
             path="/"
             element={
-              <>
-                <BowlDisplay addToOrder={handleAddToOrder} />
-                <OrderSummary bowls={currentOrder} />
-              </>
+              <OrderDisplay  bowls={currentOrder} addToOrder={handleAddToOrder} />
             }
           />
+          
 
           {/* Past Orders Page */}
           <Route

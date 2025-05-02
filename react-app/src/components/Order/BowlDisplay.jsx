@@ -120,7 +120,7 @@ function BowlDisplay({ addToOrder }) {
                     <h4 className="text-center">Choose Proteins </h4>
                     <h5 className="text-center ">Max: {maxProteins}</h5>
                     <p className="text-center text-muted">Remaining: {remainingProteins}</p>
-                    <div classname="table-responsive">
+                    <div className="table-responsive">
                     <Table striped bordered hover>
                         <thead>
                             <tr>

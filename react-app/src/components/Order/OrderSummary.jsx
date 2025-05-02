@@ -1,7 +1,12 @@
+import { Card, ListGroup} from "react-bootstrap";
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import BowlSummary from './OrderBriefSummary';
 import './OrderSummary.css';
 
 function OrderSummary(props) {
     const bowls = props.bowls;
+
+    const handleClose = () => props.setShow(false);
 
     const calculateTotalPrice = () => {
         // Calculate the total price for all bowls
@@ -27,39 +32,18 @@ function OrderSummary(props) {
     };
 
     return (
-        <>
-            <h2>Order Summary</h2>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Size</th>
-                        <th>Base</th>
-                        <th>Proteins</th>
-                        <th>Toppings</th>
-                        <th>Number of Bowls</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {bowls.map((bowl, index) => (
-                        <tr key={index}>
-                            <td>{bowl.size}</td>
-                            <td>{bowl.base}</td>
-                            <td>{Array.isArray(bowl.proteines) ? bowl.proteines.join(', ') : ''}</td>
-                            <td>{Array.isArray(bowl.ingredients) ? bowl.ingredients.join(', ') : ''}</td>
-                            <td>{bowl.numberOfBowls}</td>
-                            <td>{parseFloat(bowl.price).toFixed(2)}€</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
+        <Offcanvas show={props.show} onHide={handleClose} placement="end">
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Shopping Cart</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>   
+            {bowls.map((bowl, index) => (<BowlSummary key={index} idx={index} bowl={bowl} />))}
             <h3>Total Price: €{totalPrice.toFixed(2)}</h3>
-
             <button variant="success" className="button" onClick={SubmitOrder}>Submit Order</button>
-        </>
+          </Offcanvas.Body>
+        </Offcanvas>
     );
 }
+
 
 export default OrderSummary;
