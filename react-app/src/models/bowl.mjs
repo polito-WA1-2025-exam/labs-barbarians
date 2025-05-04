@@ -32,6 +32,7 @@ function Bowl (size, base) {
     // Creates list for storing proteines and ingredients.
     this.proteines = [];
     this.ingredients = [];
+    this.price = 9;
 
     /**
      * This method should be used to add proteines to the bowl.

@@ -4,6 +4,7 @@ import { bowl_sizes } from '../../models/bowl.mjs';
 
 
 function SizeSelection({size, handleSizeChange}){
+    var index = 0;
     return(
         <div className="col-md-6">
         <Form.Group className="mb-3 w-50 mx-auto">
@@ -13,7 +14,7 @@ function SizeSelection({size, handleSizeChange}){
                 value={size.str}
                 onChange={(e) => handleSizeChange(e.target.value)}
             >
-                {Object.values(bowl_sizes).map((size) => (<option value={size.str}> {size.str}</option>))};
+                {Object.values(bowl_sizes).map((size) => (<option key={index++} value={size.str}> {size.str}</option>))};
             </Form.Select>
         </Form.Group>
     </div>

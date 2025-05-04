@@ -20,7 +20,7 @@ function OrderDisplay(props) {
              Go to Order
             <MdOutlineShoppingBag/>
         </Button>
-        <OrderSummary show={show} setShow={setShow} bowls={props.bowls} />
+        <OrderSummary show={show} setShow={setShow} getBowls={props.getBowls} setNumOfBowl={props.setNumOfBowl}/>
       </>
     );
 }

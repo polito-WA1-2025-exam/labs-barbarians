@@ -7,9 +7,12 @@ import SizeSelection from './DisplaySizeSelection';
 import IngredientSelection from './DisplayIngredientSelection';
 import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 import BaseSelection from './DisplayBaseSelection';
+import bases from '../../models/ingredients.mjs';
 
 
 function BowlDisplay({ addToOrder }) {
+    // const [bowl, setBowl] = useState(new Bowl(bowl_sizes.r   egular, "rice"));
+    // console.log("[BOWL]", bowl)
     const [size, setSize] = useState(bowl_sizes.regular);
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
@@ -23,6 +26,7 @@ function BowlDisplay({ addToOrder }) {
     const handleSizeChange = (newSize) => {
         console.log("Selected size:", newSize);
         setSize(Object.values(bowl_sizes).find(entry => entry.str === newSize));
+        
         setProteinSelections({});
         setToppingSelections({});
     };
@@ -45,21 +49,11 @@ function BowlDisplay({ addToOrder }) {
         const newBowl = new Bowl(size.str, base);
         newBowl.proteines = selectedProteins;
         newBowl.ingredients = selectedToppings;
-        newBowl.price = calculatePrice();
+        newBowl.price = size.price;
     
         console.log("Proteines", selectedProteins)
-        // newBowl
-        
-        // {
-        //     size,
-        //     base,
-        //     proteines: selectedProteins,
-        //     ingredients: selectedToppings,
-        //     numberOfBowls: quantity,
-        //     price: calculatePrice(),
-        // };
 
-        addToOrder(newBowl);
+        addToOrder(newBowl, quantity);
     };
 
     const totalPrice = calculatePrice();

@@ -25,4 +25,4 @@ export const ingredients = {
     salad: "salad"
 };
 
-// export default {bases, proteines, ingredients};
+export default {bases, proteines, ingredients};

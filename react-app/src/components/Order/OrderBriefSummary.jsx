@@ -1,14 +1,13 @@
 import {Card, Form, ListGroup} from "react-bootstrap";
 
 
-function BowlSummary(props) {
-    const bowl = props.bowl;
+function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
 
     return (
         <>
             <Card className="mb-3 shadow-sm">
                 <Card.Header>
-                    <h5 className="mb-0">Bowl {props.idx +1}</h5>
+                    <h5 className="mb-0">Bowl {idx +1}</h5>
                 </Card.Header>
                 <Card.Body>
                     <div className="row"></div>
@@ -23,7 +22,8 @@ function BowlSummary(props) {
                     <Form.Group className="mb-3" controlId="quantitySelect">
                         <Form.Label><strong>Number of Boxes:</strong></Form.Label>
                         <Form.Select
-                        value={bowl.numberOfBowls}
+                        value={numberOfBowls}
+                        onChange={(e) => setNumOfBowl(bowl, e.target.value)}
                         >
                         {[1, 2, 3, 4, 5].map((num) => (
                             <option key={num} value={num}>

@@ -28,7 +28,19 @@ function Order(orderId) {
         }else{
             this.bowls.push([bowl, 1]);
         }
-        this.price += bowl.price();
+        this.price += bowl.price;
+    }
+
+    this.changeNumBowls = function(bowl, num){
+        if (!(bowl instanceof Bowl)) {
+            throw new Error("Invalid bowl");
+        }
+        const index = this.bowls.findIndex(item => item[0].toString() === bowl.toString());
+        if (index == -1){
+            throw new Error("Bowl not part of Order");
+        }else{
+            this.bowls[index][1] = num;
+        }
     }
 
     /**

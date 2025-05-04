@@ -39,7 +39,7 @@ function generateOrders(){
 function App() {
   const [username, setUsername] = useState('testUser'); // User state
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
-  const [currentOrder, setCurrentOrder] = useState([]); // Current order in progress
+  const [order, setOrder] = useState(new Order()) // Order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
   useEffect(() => {
     const orders = generateOrders();
@@ -51,9 +51,25 @@ function App() {
     setShowProfile(false);
   };
 
-  const handleAddToOrder = (bowl) => {
-    setCurrentOrder((prevOrder) => [...prevOrder, bowl]);
+  const handleAddToOrder = (bowl, num) => {
+    const newOrder = new Order();
+    newOrder.bowls = order.bowls;
+    for (var i = 0; i < num; i++){
+      newOrder.addBowl(bowl);
+    }
+    setOrder(newOrder);
   };
+
+  const getBowlsNums = () =>{
+    return order.bowls; 
+  }
+
+  const setNumOfBowl = (bowl, num) => {
+    const newOrder = new Order();
+    order.changeNumBowls(bowl, num);
+    newOrder.bowls = order.bowls;
+    setOrder(newOrder);
+  }
 
   return (
     <Router>
@@ -75,7 +91,7 @@ function App() {
           <Route
             path="/"
             element={
-              <OrderDisplay  bowls={currentOrder} addToOrder={handleAddToOrder} />
+              <OrderDisplay  getBowls={getBowlsNums} addToOrder={handleAddToOrder} setNumOfBowl={setNumOfBowl}/>
             }
           />
           

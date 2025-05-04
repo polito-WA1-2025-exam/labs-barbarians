@@ -40,9 +40,9 @@ function NavBar({ username, setUser, setShowProfile }) {
                   <Dropdown.Item as={Link} to="/past-orders">
                     Past Orders
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/order">
+                  {/* <Dropdown.Item as={Link} to="/order">
                     Order
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                   <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
