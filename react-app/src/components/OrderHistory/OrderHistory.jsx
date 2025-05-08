@@ -2,6 +2,7 @@ import OrderHistoryEntry from "./OrderHistoryEntry";
 import OrderSummary from "./OrderSummary";
 import Table from 'react-bootstrap/Table';
 import React, { useState } from 'react';
+import { LoadOrders, LoadBowlsOrder } from '../../API/API.js';
 // import Stack from 'react-bootstrap/Stack';
 
 function DisplayOrderHistory(props){
@@ -14,6 +15,29 @@ function DisplayOrderHistory(props){
     setDisplayOrder(order);
     setModalShow(true);
   }
+
+  useEffect(() => {
+    if (username) {
+        LoadOrders(username)
+            .then((orders) => {
+                // Fetch bowls for each order and attach them to the respective order
+                const fetchBowlsForOrders = async () => {
+                    const ordersWithBowls = await Promise.all(
+                        orders.map(async (order) => {
+                            const bowls = await LoadBowlsOrder(username, order.id);
+                            return { ...order, bowls };
+                        })
+                    );
+                    setPastOrders(ordersWithBowls);
+                };
+
+                fetchBowlsForOrders();
+            })
+            .catch((error) => {
+                console.error('Error loading orders:', error);
+            });
+    }
+}, [username]);
 
     return (
       <>

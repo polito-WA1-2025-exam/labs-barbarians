@@ -10,10 +10,11 @@ import LoginPage from './components/Profile/LoginDisplay';
 import OrderSummary from './components/Order/OrderSummary';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
 
 import { format } from 'morgan';
 
-function generateOrders(){
+/*function generateOrders(){
   const bowls = generateBowls(10);
   let order1 = new Order(1);
   order1.addBowl(bowls[2]);
@@ -32,18 +33,36 @@ function generateOrders(){
   order4.addBowl(bowls[9]);
   const orders = [order1, order2, order3, order4];
   return orders;
-}
+}*/
 
 
 function App() {
-  const [username, setUsername] = useState('testUser'); // User state
+  
+  
+
+  const [username, setUsername] = useState('test123'); // User state
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
   const [currentOrder, setCurrentOrder] = useState([]); // Current order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
+  
   useEffect(() => {
-    const orders = generateOrders();
-    setPastOrders(orders);
+    LoadOrders('test123')
+      .then((orders) => {
+        // Fetch bowls for each order and attach them to the respective order
+        const fetchBowlsForOrders = async () => {
+          const ordersWithBowls = await Promise.all(
+            orders.map(async (order) => {
+              const bowls = await LoadBowlsOrder('test123', order.id);
+              return { ...order, bowls };
+            })
+          );
+          setPastOrders(ordersWithBowls);
+        };
+
+        fetchBowlsForOrders();
+      });
   }, []);
+
   const handleDeleteProfile = () => {
     alert('Profile deleted!');
     setUsername(null);
@@ -53,6 +72,10 @@ function App() {
   const handleAddToOrder = (bowl) => {
     setCurrentOrder((prevOrder) => [...prevOrder, bowl]);
   };
+
+
+
+
 
   return (
     <Router>
@@ -76,7 +99,7 @@ function App() {
             element={
               <>
                 <BowlDisplay addToOrder={handleAddToOrder} />
-                <OrderSummary bowls={currentOrder} />
+                <OrderSummary username= {username} bowls={currentOrder} onSubmitOrder={SubmitOrder} />
               </>
             }
           />
@@ -85,7 +108,7 @@ function App() {
           <Route
             path="/past-orders"
             element={
-              <DisplayOrderHistory orders={pastOrders} />
+              <DisplayOrderHistory username={username}  />
             }
           />
 

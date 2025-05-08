@@ -3,12 +3,13 @@ import morgan from 'morgan';
 import { DBmanager } from './manageDB.mjs';
 import { Order } from './components/order.mjs';
 import { Bowl } from './components/bowl.mjs';
-
+import cors from 'cors';
 const dbManager = new DBmanager() ;
 const app = express() ;
 
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cors());
 
 app.get('/user/auth/:username/:passwordHash', (req, res) =>	{
     dbManager.authUser(req.params.username, req.params.passwordHash).then( _ => res.send('User authenticated')).catch(err => res.send("User not authenticated")) ;
@@ -43,9 +44,11 @@ app.get('/user/:username/:orderId/retrieveBowls', (req, res) => {
 })
 
 app.post('/addOrder', (req,res)=> {
-    const{username, order} = req.body ;
+    console.log("full body", req.body);
+    const{username, order,totalPrice} = req.body ;
+    //console.log('this is the order:',order);
     
-    dbManager.addOrder(username, order)
+    dbManager.addOrder(username, order, totalPrice)
     .then(order => res.json(order))
     .catch(err => {
         console.error("Error adding order:", err);

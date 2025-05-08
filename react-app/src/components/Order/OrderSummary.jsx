@@ -2,7 +2,7 @@ import './OrderSummary.css';
 
 function OrderSummary(props) {
     const bowls = props.bowls;
-
+    const onSubmitOrder = props.onSubmitOrder;
     const calculateTotalPrice = () => {
         // Calculate the total price for all bowls
         const totalPriceWithoutDiscount = bowls.reduce((total, bowl) => {
@@ -22,8 +22,22 @@ function OrderSummary(props) {
 
     const totalPrice = calculateTotalPrice();
 
-    const SubmitOrder = () => {
-        console.log('Order submit button pressed!');
+    const handleSubmit = () => {
+        const orderData = {
+            order: {
+            bowls: bowls.map((bowl) => ({
+                size: bowl.size,
+                base: bowl.base,
+                proteins: bowl.proteines,
+                ingredients: bowl.ingredients,
+                nrBowls: Number(bowl.numberOfBowls), 
+                price: parseFloat(bowl.price), 
+            })),
+            },
+            totalPrice: parseFloat(totalPrice.toFixed(2)), // Ensure totalPrice is a number
+        };
+
+        onSubmitOrder(props.username,orderData); // Call the function passed from App.jsx
     };
 
     return (
@@ -57,7 +71,7 @@ function OrderSummary(props) {
 
             <h3>Total Price: €{totalPrice.toFixed(2)}</h3>
 
-            <button variant="success" className="button" onClick={SubmitOrder}>Submit Order</button>
+            <button variant="success" className="button" onClick={handleSubmit}>Submit Order</button>
         </>
     );
 }

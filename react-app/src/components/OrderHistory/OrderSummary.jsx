@@ -6,7 +6,7 @@ import OrderSummaryEntry from './OrderSummaryEntry';
 function OrderSummary(props){
 
     const order = props.order;
-
+  
     return (
       <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header closeButton>
@@ -26,7 +26,7 @@ function OrderSummary(props){
             </tr>
           </thead>
           <tbody>
-            {order?.bowls?.map((bowl, index) => <OrderSummaryEntry key={index} bowl={bowl[0]} quantity={bowl[1]} />)}
+            {order.bowls.map((bowl, index) => <OrderSummaryEntry key={index} bowl={bowl} quantity={bowl.nrBowls} />)}
           </tbody>
           </Table>
         </Modal.Body>
