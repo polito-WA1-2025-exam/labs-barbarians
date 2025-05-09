@@ -20,7 +20,7 @@ function NavBar({ username, setUser, setShowProfile }) {
     <Navbar expand="lg" className="fixed-top bg-primary">
       <Container>
         <Navbar.Brand as={Link} to="/" className="text-white">
-          Create PokéBowl
+          PokeBowl App
         </Navbar.Brand>
         <Nav className="me-auto"></Nav>
         <Navbar.Collapse className="justify-content-end">

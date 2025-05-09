@@ -1,12 +1,12 @@
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const proteinsList = ["Salmon", "Tuna", "Chicken", "Tofu"];
 const toppingsList = ["Avocado", "Ananas", "Cashew Nuts", "Mango", "Peppers"];
 
-function BowlDisplay({ addToOrder }) {
+function CreateBowl({ addToOrder }) {
     const [size, setSize] = useState("R");
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
@@ -14,9 +14,9 @@ function BowlDisplay({ addToOrder }) {
     const [quantity, setQuantity] = useState(1);
 
     const sizeConstraints = {
-        R: { maxProteins: 1, maxToppings: 4, basePrice: 9 },
-        M: { maxProteins: 2, maxToppings: 4, basePrice: 11 },
-        L: { maxProteins: 3, maxToppings: 6, basePrice: 14 },
+        R: { maxProteins: 1, maxToppings: 4 },
+        M: { maxProteins: 2, maxToppings: 4 },
+        L: { maxProteins: 3, maxToppings: 6 },
     };
 
     const totalSelectedProteins = Object.values(proteinSelections).reduce((sum, qty) => sum + qty, 0);
@@ -30,30 +30,49 @@ function BowlDisplay({ addToOrder }) {
 
     const handleSizeChange = (newSize) => {
         setSize(newSize);
-        setProteinSelections({});
-        setToppingSelections({});
+        const newMaxProteins = sizeConstraints[newSize].maxProteins;
+        const newMaxToppings = sizeConstraints[newSize].maxToppings;
+
+        let adjustedProteins = {};
+        let remainingProteins = newMaxProteins;
+        for (let protein of Object.keys(proteinSelections)) {
+            if (remainingProteins > 0) {
+                let allowed = Math.min(proteinSelections[protein], remainingProteins);
+                adjustedProteins[protein] = allowed;
+                remainingProteins -= allowed;
+            }
+        }
+
+        let adjustedToppings = {};
+        let remainingToppings = newMaxToppings;
+        for (let topping of Object.keys(toppingSelections)) {
+            if (remainingToppings > 0) {
+                let allowed = Math.min(toppingSelections[topping], remainingToppings);
+                adjustedToppings[topping] = allowed;
+                remainingToppings -= allowed;
+            }
+        }
+
+        setProteinSelections(adjustedProteins);
+        setToppingSelections(adjustedToppings);
     };
 
     const handleProteinChange = (protein, value) => {
         const newQty = Number(value);
-        setProteinSelections(prev => ({ ...prev, [protein]: newQty }));
+        const newTotal = totalSelectedProteins - (proteinSelections[protein] || 0) + newQty;
+
+        if (newTotal <= maxProteins) {
+            setProteinSelections(prev => ({ ...prev, [protein]: newQty }));
+        }
     };
 
     const handleToppingChange = (topping, value) => {
         const newQty = Number(value);
-        setToppingSelections(prev => ({ ...prev, [topping]: newQty }));
-    };
+        const newTotal = totalSelectedToppings - (toppingSelections[topping] || 0) + newQty;
 
-    const calculatePrice = () => {
-        const basePrice = sizeConstraints[size].basePrice;
-        const extraToppings = Math.max(0, totalSelectedToppings - maxToppings);
-        const extraToppingsCost = extraToppings * (basePrice * 0.2); // 20% of base price per extra topping
-        let totalPrice = (basePrice + extraToppingsCost) * quantity;
-
-
-       
-
-        return totalPrice.toFixed(2); // Return price with 2 decimal places
+        if (newTotal <= maxToppings) {
+            setToppingSelections(prev => ({ ...prev, [topping]: newQty }));
+        }
     };
 
     const handleAddBowl = () => {
@@ -66,46 +85,47 @@ function BowlDisplay({ addToOrder }) {
             proteines: selectedProteins,
             ingredients: selectedToppings,
             numberOfBowls: quantity,
-            price: calculatePrice(),
+            price: () => {
+                if (size === "R") return 9;
+                if (size === "M") return 11;
+                if (size === "L") return 14;
+                return 0;
+            },
         };
 
         addToOrder(newBowl);
     };
 
-    const totalPrice = calculatePrice();
-
     return (
-        <div className="container-fluid content-padding">
+        <div className="container content-padding">
             <h2 className="text-center mb-4">Create Your PokéBowl</h2>
 
-            {/* Size Selection */}
             <div className="row">
+                {/* Size Selection */}
                 <div className="col-md-6">
-                <Form.Group className="mb-3 w-50 mx-auto">
-                    <Form.Label><strong>Choose your size</strong></Form.Label>
-                    <Form.Select
-                        aria-label="Choose size"
-                        value={size}
-                        onChange={(e) => handleSizeChange(e.target.value)}
-                    >
-                        <option value="R">Regular</option>
-                        <option value="M">Medium</option>
-                        <option value="L">Large</option>
-                    </Form.Select>
-                </Form.Group>
-            </div>
+                    <Form.Group className="mb-3">
+                        <Form.Label><strong>Choose your size</strong></Form.Label>
+                        <Form.Select
+                            aria-label="Choose size"
+                            value={size}
+                            onChange={(e) => handleSizeChange(e.target.value)}
+                        >
+                            <option value="R">Regular</option>
+                            <option value="M">Medium</option>
+                            <option value="L">Large</option>
+                        </Form.Select>
+                    </Form.Group>
+                </div>
 
-            {/*  Proteins, and Toppings Side by Side */}
-                <div className="col-md-6">
                 {/* Base Selection */}
-                
-                    <h6 className="text-center"><strong>Choose Your Base</strong></h6>
-                    <Form.Group className="mb-3 w-50 mx-auto">
-                        <Form.Label><strong>Select Base</strong></Form.Label>
+                <div className="col-md-6">
+                    <Form.Group className="mb-3">
+                        <Form.Label><strong>Choose your base</strong></Form.Label>
                         <Form.Select
                             aria-label="Choose base"
                             value={base}
-                            onChange={(e) => setBase(e.target.value)}>
+                            onChange={(e) => setBase(e.target.value)}
+                        >
                             <option value="Rice">Rice</option>
                             <option value="Black Rice">Black Rice</option>
                             <option value="Salad">Salad</option>
@@ -113,14 +133,13 @@ function BowlDisplay({ addToOrder }) {
                     </Form.Group>
                 </div>
             </div>
-            
+
+            {/* Proteins and Toppings Side by Side */}
+            <div className="row mt-4">
                 {/* Proteins Table */}
-                <div className="row mt-6">
                 <div className="col-md-6">
-                    <h4 className="text-center">Choose Proteins </h4>
-                    <h5 className="text-center ">Max: {maxProteins}</h5>
+                    <h4 className="text-center">Choose Proteins (Max: {maxProteins})</h4>
                     <p className="text-center text-muted">Remaining: {remainingProteins}</p>
-                    <div classname="table-responsive">
                     <Table striped bordered hover>
                         <thead>
                             <tr>
@@ -136,12 +155,9 @@ function BowlDisplay({ addToOrder }) {
                                         <Form.Select
                                             value={proteinSelections[protein] || 0}
                                             onChange={(e) => handleProteinChange(protein, e.target.value)}
-                                            disabled={remainingProteins === 0 && !(proteinSelections[protein] > 0)}
                                         >
-                                            {[...Array(maxProteins +1 ).keys()].map((i) => (
-                                                <option key={i} value={i}>
-                                                    {i}
-                                                </option>
+                                            {[...Array(maxProteins + 1).keys()].map(i => (
+                                                <option key={i} value={i}>{i}</option>
                                             ))}
                                         </Form.Select>
                                     </td>
@@ -149,16 +165,13 @@ function BowlDisplay({ addToOrder }) {
                             ))}
                         </tbody>
                     </Table>
-                    </div>
                 </div>
 
                 {/* Toppings Table */}
                 <div className="col-md-6">
-                    <h4 className="text-center">Choose Toppings </h4>
-                    <h5 classnmae="text-center ">Max: {maxToppings}</h5>
+                    <h4 className="text-center text-nowrap">Choose Toppings (Max: {maxToppings})</h4>
                     <p className="text-center text-muted">Remaining: {remainingToppings}</p>
                     <div className="scrollable-table">
-                        <div className="table-responsive">
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
@@ -175,10 +188,8 @@ function BowlDisplay({ addToOrder }) {
                                                 value={toppingSelections[topping] || 0}
                                                 onChange={(e) => handleToppingChange(topping, e.target.value)}
                                             >
-                                                {[...Array(maxToppings + 1).keys()].map((i) => (
-                                                    <option key={i} value={i}>
-                                                        {i}
-                                                    </option>
+                                                {[...Array(maxToppings + 1).keys()].map(i => (
+                                                    <option key={i} value={i}>{i}</option>
                                                 ))}
                                             </Form.Select>
                                         </td>
@@ -186,7 +197,6 @@ function BowlDisplay({ addToOrder }) {
                                 ))}
                             </tbody>
                         </Table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -199,16 +209,13 @@ function BowlDisplay({ addToOrder }) {
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                 >
-                    {[...Array(10).keys()].map((i) => (
-                        <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                        </option>
-                    ))}
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                 </Form.Select>
             </Form.Group>
-
-            {/* Price Preview */}
-            <h4 className="text-center mt-3">Total Price: {totalPrice}€</h4>
 
             {/* Submit Button */}
             <div className="text-center">
@@ -220,4 +227,4 @@ function BowlDisplay({ addToOrder }) {
     );
 }
 
-export default BowlDisplay;
+export default CreateBowl;
