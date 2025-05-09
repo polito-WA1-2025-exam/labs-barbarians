@@ -11,6 +11,7 @@ import LoginPage from './components/Profile/LoginDisplay';
 import OrderDisplay from './components/Order/OrderDisplay';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
 
 import { format } from 'morgan';
 
@@ -45,6 +46,7 @@ function App() {
     const orders = generateOrders();
     setPastOrders(orders);
   }, []);
+
   const handleDeleteProfile = () => {
     alert('Profile deleted!');
     setUsername(null);
@@ -59,6 +61,9 @@ function App() {
     }
     setOrder(newOrder);
   };
+
+  const handleSubmitOrder = (username, orderData) => {
+  }
 
   const getBowlsNums = () =>{
     return order.bowls; 
@@ -91,7 +96,7 @@ function App() {
           <Route
             path="/"
             element={
-              <OrderDisplay  getBowls={getBowlsNums} addToOrder={handleAddToOrder} setNumOfBowl={setNumOfBowl}/>
+              <OrderDisplay  getBowls={getBowlsNums} addToOrder={handleAddToOrder} setNumOfBowl={setNumOfBowl} submitOrder={handleSubmitOrder}/>
             }
           />
           

@@ -156,7 +156,7 @@ export class DBmanager {
     });
   }
 
-  addOrder(username, order) {
+  addOrder(username, order, totalPrice) {
     return new Promise((resolve, reject) => {
       this.db.serialize(() => {
         // Start the transaction
@@ -164,21 +164,21 @@ export class DBmanager {
           if (err) return reject(err);
 
           try {
-            let totPrice = 0;
+            let totPrice = totalPrice ?? 0;
             let totNrBowls = 0;
             let nrLeft = 0;
             // Create order and get the orderId
             const orderId = await this.createOrder(username);
-            
+            //console.log("this order: ", order)
             // Process all bowls in parallel
             await Promise.all(
               order.bowls.map(async (bowl) => {
                 console.log(`Processing bowl: ${JSON.stringify(bowl)}`);
-                if (bowl.size === "regular"){
+                if (bowl.size === "R"){
                  nrLeft = await this.bowlsLeft("R");}
-                else if (bowl.size === "medium"){
+                else if (bowl.size === "M"){
                    nrLeft = await this.bowlsLeft("M");}
-                else if (bowl.size === "big"){
+                else if (bowl.size === "L"){
                    nrLeft = await this.bowlsLeft("L");}
                 if (nrLeft < bowl.nrBowls) {
                   throw new Error(`Not enough bowls of size ${bowl.size}`);
@@ -196,7 +196,7 @@ export class DBmanager {
 
                 await this.updateBowlsLeft(bowl.size, nrLeft - bowl.nrBowls);
 
-                totPrice += bowl.price;
+                //totPrice += bowl.price;
                 totNrBowls += bowl.nrBowls;
               })
             );

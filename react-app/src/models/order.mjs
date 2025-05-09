@@ -1,4 +1,5 @@
 import { Bowl } from "./bowl.mjs";
+import dayjs from "dayjs";
 
 /**
  * The Order object should be used to handle a order. It stores the current bowls, determine the price and provide method for adjusting the bowls 
@@ -10,6 +11,10 @@ function Order(orderId) {
     // The price object stores the current price for the order.
     this.price = 0;
     this.id = orderId;
+    this.date = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    this.toString = function() {
+        return this.id;
+    }
 
     /**
      * This method adds a bowl to the order. If the same bowl already exists, it increments the quantity. Moreover, the price is automatically adjusted.

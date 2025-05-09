@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/user/admin/retrieveOrders
+GET http://localhost:3000/user/test123/retrieveOrders
 Content-Type: application/json
 
 ###
@@ -38,7 +38,7 @@ Content-Type: application/json
   "order": {
     "bowls": [
       {
-        "size": "regular",
+        "size": "R",
         "base": "rice",
         "ingredients": ["avocado", "mango", "salad", "carrots"],
         "proteins": "tuna",
@@ -46,7 +46,7 @@ Content-Type: application/json
         "price": 18
       },
       {
-        "size": "regular",
+        "size": "R",
         "base": "rice",
         "ingredients": ["avocado", "mango", "salad", "carrots"],
         "proteins": "chicken",
