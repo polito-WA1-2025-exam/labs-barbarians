@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { ingredients, proteines } from '../../models/ingredients.mjs';
 
+
 function IngredientSelection({maxToppings, toppingSelections, setToppingSelections}) {
 
     const totalSelectedToppings = Object.values(toppingSelections).reduce((sum, qty) => sum + qty, 0);
@@ -20,8 +21,7 @@ function IngredientSelection({maxToppings, toppingSelections, setToppingSelectio
                         <h5 classnmae="text-center ">Max: {maxToppings}</h5>
                         <p className="text-center text-muted">Remaining: {remainingToppings}</p>
                         <div className="scrollable-table">
-                            <div className="table-responsive">
-                            <Table striped bordered hover>
+                            <Table striped bordered hover  >
                                 <thead>
                                     <tr>
                                         <th scope="col">Topping</th>
@@ -50,7 +50,7 @@ function IngredientSelection({maxToppings, toppingSelections, setToppingSelectio
                             </Table>
                             </div>
                         </div>
-                    </div>
+                    
                 );
 }
 

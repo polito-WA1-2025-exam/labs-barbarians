@@ -1,4 +1,4 @@
-import {Card, Form, ListGroup} from "react-bootstrap";
+import {Button, Card, Form, ListGroup} from "react-bootstrap";
 
 
 function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
@@ -12,7 +12,7 @@ function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
                 <Card.Body>
                     <div className="row"></div>
                     <ListGroup variant="flush" className="mb-3">
-                        <ListGroup.Item><strong>Size:</strong> {bowl.size}</ListGroup.Item>
+                        <ListGroup.Item><strong>Size:</strong> {bowl.size.charAt(0).toUpperCase() + bowl.size.slice(1)}</ListGroup.Item>
                         <ListGroup.Item><strong>Base:</strong> {bowl.base}</ListGroup.Item>
                         <ListGroup.Item><strong>Proteins:</strong> {bowl.proteines.join(", ")}</ListGroup.Item>
                         <ListGroup.Item><strong>Ingredients:</strong> {bowl.ingredients.join(", ")}</ListGroup.Item>
@@ -20,7 +20,7 @@ function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
                     </ListGroup>
 
                     <Form.Group className="mb-3" controlId="quantitySelect">
-                        <Form.Label><strong>Number of Boxes:</strong></Form.Label>
+                        <Form.Label><strong>Number of Bowls:</strong></Form.Label>
                         <Form.Select
                         value={numberOfBowls}
                         onChange={(e) => setNumOfBowl(bowl, e.target.value)}
@@ -32,6 +32,9 @@ function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
                         ))}
                         </Form.Select>
                     </Form.Group>
+                    <Button variant="danger" onClick={() => setNumOfBowl(bowl, 0)}>
+                    <i className="bi bi-trash"> Remove Bowl</i>
+                    </Button>
                 </Card.Body>
             </Card>
         </>

@@ -1,63 +1,54 @@
-import OrderHistoryEntry from "./OrderHistoryEntry";
-import OrderSummary from "./OrderSummary";
-import Table from 'react-bootstrap/Table';
 import React, { useState } from 'react';
-import { LoadOrders, LoadBowlsOrder } from '../../API/API.js';
-// import Stack from 'react-bootstrap/Stack';
+import Table from 'react-bootstrap/Table';
+import OrderHistoryEntry from './OrderHistoryEntry';
+import OrderSummary from './OrderSummary';
 
-function DisplayOrderHistory(props){
-
-  const orders = props.orders;
-  const [displayOrder, setDisplayOrder] = useState(orders[0]);
+function DisplayOrderHistory({ orders }) {
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
-  const appearOrderSummary = (order) => {
-    setDisplayOrder(order);
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
     setModalShow(true);
-  }
+  };
 
-  useEffect(() => {
-    if (username) {
-        LoadOrders(username)
-            .then((orders) => {
-                // Fetch bowls for each order and attach them to the respective order
-                const fetchBowlsForOrders = async () => {
-                    const ordersWithBowls = await Promise.all(
-                        orders.map(async (order) => {
-                            const bowls = await LoadBowlsOrder(username, order.id);
-                            return { ...order, bowls };
-                        })
-                    );
-                    setPastOrders(ordersWithBowls);
-                };
-
-                fetchBowlsForOrders();
-            })
-            .catch((error) => {
-                console.error('Error loading orders:', error);
-            });
-    }
-}, [username]);
-
-    return (
-      <>
-        <h1 className="text-center mt-5">Order History</h1>
-        <Table responsive hover>
-          <thead>
+  return (
+    <>
+      <h1 className="text-center mt-5">Order History</h1>
+      <Table responsive hover>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Number of Bowls</th>
+            <th>Total Price (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <tr key={order.id} onClick={() => handleOrderClick(order)}>
+                <OrderHistoryEntry order={order} />
+              </tr>
+            ))
+          ) : (
             <tr>
-              <th>OrderId</th>
-              <th>Date</th>
-              <th>Number of Bowls</th>
-              <th>Price</th>
+              <td colSpan="4" className="text-center">
+                No past orders found.
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {orders.map(order =><tr key={order.id} onClick={() => appearOrderSummary(order)}><OrderHistoryEntry order={order} /></tr>)}
-          </tbody>
-        </Table>
-        <OrderSummary order={displayOrder} show={modalShow} onHide={() => setModalShow(false)} />
-      </>
-    )
+          )}
+        </tbody>
+      </Table>
+      {selectedOrder && (
+        <OrderSummary
+          order={selectedOrder}
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+        />
+      )}
+    </>
+  );
 }
 
 export default DisplayOrderHistory;

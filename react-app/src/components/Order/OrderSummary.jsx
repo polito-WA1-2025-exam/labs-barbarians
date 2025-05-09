@@ -1,63 +1,67 @@
-import { Card, ListGroup} from "react-bootstrap";
-import Offcanvas from 'react-bootstrap/Offcanvas';
-import BowlSummary from './OrderBriefSummary';
-import './OrderSummary.css';
+import { Offcanvas, Button } from "react-bootstrap";
+import BowlSummary from "./OrderBriefSummary";
+import "./OrderSummary.css";
 
 function OrderSummary(props) {
-    const bowls = props.getBowls();
+  const bowls = props.getBowls();
 
-    const handleClose = () => props.setShow(false);
+  const handleClose = () => props.setShow(false);
 
-    const calculateTotalPrice = () => {
-        // Calculate the total price for all bowls
-        const totalPriceWithoutDiscount = bowls.reduce((total, bowl) => {
-            return total + parseFloat(bowl[0].price * bowl[1]); // Sum up the price of all bowls
-        }, 0);
+  const calculateTotalPrice = () => {
+    return bowls.reduce((total, [bowl, quantity]) => {
+      return total + bowl.price * quantity; // Multiply price by quantity
+    }, 0);
+  };
 
-        // Calculate the total number of bowls
-        const totalBowls = bowls.reduce((total, bowl) => total + bowl.numberOfBowls, 0);
+  const totalPrice = calculateTotalPrice();
 
-        // Apply a 10% discount if more than 5 bowls are ordered
-        if (totalBowls >= 4) {
-            return totalPriceWithoutDiscount * 0.9; // Apply 10% discount
-        }
-
-        return totalPriceWithoutDiscount;
+  const handleSubmit = async () => {
+    const orderData = {
+      order: {
+        bowls: bowls.map(([bowl, quantity]) => ({
+          size: bowl.size,
+          base: bowl.base,
+          proteins: bowl.proteines,
+          ingredients: bowl.ingredients,
+          nrBowls: quantity,
+          price: bowl.price, 
+        })),
+      },
+      totalPrice: totalPrice,
     };
 
-    const totalPrice = calculateTotalPrice();
+    try {
+      await props.onSubmitOrder(props.username, orderData); 
+      alert("Order submitted successfully!");
+      props.setShow(false); 
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      alert("Failed to submit the order. Please try again.");
+    }
+  };
 
-    const handleSubmit = () => {
-        const orderData = {
-            order: {
-            bowls: bowls.map((bowl) => ({
-                size: bowl.size,
-                base: bowl.base,
-                proteins: bowl.proteines,
-                ingredients: bowl.ingredients,
-                nrBowls: Number(bowl.numberOfBowls), 
-                price: parseFloat(bowl.price), 
-            })),
-            },
-            totalPrice: parseFloat(totalPrice.toFixed(2)), // Ensure totalPrice is a number
-        };
-
-        onSubmitOrder(props.username,orderData); // Call the function passed from App.jsx
-    };
-
-    return (
-        <Offcanvas show={props.show} onHide={handleClose} placement="end">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Shopping Cart</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>   
-            {bowls.map((bowl, index) => (<BowlSummary key={index} idx={index} bowl={bowl[0]} numberOfBowls={bowl[1]} setNumOfBowl={props.setNumOfBowl}/>))}
-            <h3>Total Price: €{totalPrice.toFixed(2)}</h3>
-            <button variant="success" className="button" onClick={handleSubmit}>Submit Order</button>
-          </Offcanvas.Body>
-        </Offcanvas>
-    );
+  return (
+    <Offcanvas show={props.show} onHide={handleClose} placement="end">
+      <Offcanvas.Header closeButton>
+        <Offcanvas.Title>Shopping Cart</Offcanvas.Title>
+      </Offcanvas.Header>
+      <Offcanvas.Body>
+        {bowls.map(([bowl, quantity], index) => (
+          <BowlSummary
+            key={index}
+            idx={index}
+            bowl={bowl}
+            numberOfBowls={quantity}
+            setNumOfBowl={props.setNumOfBowl}
+          />
+        ))}
+        <h3>Total Price: €{totalPrice.toFixed(2)}</h3>
+        <Button variant="success" className="button" onClick={handleSubmit}>
+          Submit Order
+        </Button>
+      </Offcanvas.Body>
+    </Offcanvas>
+  );
 }
-
 
 export default OrderSummary;

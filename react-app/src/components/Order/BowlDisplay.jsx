@@ -46,12 +46,10 @@ function BowlDisplay({ addToOrder }) {
         const selectedProteins = Object.keys(proteinSelections).filter(protein => proteinSelections[protein] > 0);
         const selectedToppings = Object.keys(toppingSelections).filter(topping => toppingSelections[topping] > 0);
 
-        const newBowl = new Bowl(size.str, base);
+        const newBowl = new Bowl(size.str.toLowerCase(), base); // Use size.str to pass the string representation
         newBowl.proteines = selectedProteins;
         newBowl.ingredients = selectedToppings;
         newBowl.price = size.price;
-    
-        console.log("Proteines", selectedProteins)
 
         addToOrder(newBowl, quantity);
     };

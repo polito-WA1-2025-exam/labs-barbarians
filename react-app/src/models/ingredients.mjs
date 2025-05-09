@@ -1,28 +1,28 @@
 export const bases ={
-    rice: "rice",
-    black_rice: "black_rice",
-    salad: "salad"
+    rice: "Rice",
+    black_rice: "Black rice",
+    salad: "Salad"
 };
 
 export const proteines = {
-    tuna: "tuna",
-    chicken: "chicken",
-    salmon: "salmon",
-    tofu: "tofu"
+    tuna: "Tuna",
+    chicken: "Chicken",
+    salmon: "Salmon",
+    tofu: "Tofu"
 };
 
 export const ingredients = {
-    avocado: "avocado",
-    ananas: "ananas",
-    cashew_nuts: "cashew_nuts",
-    kale: "kale",
-    mango: "mango",
-    peppers: "peppers",
-    corn: "corn",
-    wakame: "wakame",
-    tomatoes: "tomatoes",
-    carrots: "carrots",
-    salad: "salad"
+    avocado: "Avocado",
+    ananas: "Ananas",
+    cashew_nuts: "Cashew nuts",
+    kale: "Kale",
+    mango: "Mango",
+    peppers: "Peppers",
+    corn: "Corn",
+    wakame: "Wakame",
+    tomatoes: "Tomatoes",
+    carrots: "Carrots",
+    salad: "Salad"
 };
 
 export default {bases, proteines, ingredients};

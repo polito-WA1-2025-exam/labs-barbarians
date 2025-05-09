@@ -9,8 +9,8 @@ function BaseSelection({base, setBase}){
                 {/* Base Selection */}
                 
                     <h6 className="text-center"><strong>Choose Your Base</strong></h6>
-                    <Form.Group className="mb-3 w-50 mx-auto">
-                        <Form.Label><strong>Select Base</strong></Form.Label>
+                    <Form.Group className="mb-3 w-55 mx-auto">
+                        <Form.Label>Select Base</Form.Label>
                         <Form.Select
                             aria-label="Choose base"
                             value={base}

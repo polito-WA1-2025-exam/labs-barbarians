@@ -32,3 +32,11 @@ button:hover {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.scrollable-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+  }
+

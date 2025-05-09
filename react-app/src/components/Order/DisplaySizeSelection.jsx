@@ -7,8 +7,9 @@ function SizeSelection({size, handleSizeChange}){
     var index = 0;
     return(
         <div className="col-md-6">
-        <Form.Group className="mb-3 w-50 mx-auto">
-            <Form.Label><strong>Choose your size</strong></Form.Label>
+        <h6 className="text-center"><strong>Choose Your Base</strong></h6>
+        <Form.Group className="mb-3 w-55 mx-auto">
+            <Form.Label>Select Size</Form.Label>
             <Form.Select
                 aria-label="Choose size"
                 value={size.str}
