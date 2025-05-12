@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { proteines } from '../../models/ingredients.mjs';
 
 function ProteinSelection({maxProteins, proteinSelections, setProteinSelections}) {
-    console.log(maxProteins)
+    //console.log(maxProteins)
 
     const totalSelectedProteins = Object.values(proteinSelections).reduce((sum, qty) => sum + qty, 0);
     const remainingProteins = maxProteins - totalSelectedProteins;

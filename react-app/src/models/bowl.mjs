@@ -11,26 +11,19 @@ const bowl_sizes = {
 
 /**
  * The Bowl object represents one bowl. Thereby it stores the size, base, proteiens and ingredients and determine its prices. The bowl object cannot be identified by an ID but by a string that is created with the provided toString method. 
- * @param {bowl_sizes} size - Determines the size of the bowl.
- * @param {bases} base - Provides the base for this bowl.
  */
-function Bowl(size, base) {
-    // Ensure size is a valid string
-    if (!(size in bowl_sizes)) {
-        console.log(size)
-        throw new Error("Invalid bowl size");
+export class Bowl {
+    constructor(size, base) {
+        const validSizes = ["regular", "medium", "big"];
+        if (!validSizes.includes(size)) {
+            throw new Error("Invalid bowl size");
+        }
+        this.size = size;
+        this.base = base;
+        this.proteines = [];
+        this.ingredients = [];
+        this.price = 0;
     }
-
-    this.size = size; // Use the string key (e.g., "regular", "medium", "big")
-    this.base = base;
-
-    this.proteines = [];
-    this.ingredients = [];
-    this.price = bowl_sizes[size].price; // Set price based on size
-
-    this.toString = function() {
-        return `Bowl size: ${this.size}, base: ${this.base}, proteines: ${this.proteines.join(", ")}, ingredients: ${this.ingredients.join(", ")}`;
-    };
 }
 
 function generateBowls(count) {
@@ -56,7 +49,7 @@ function generateBowls(count) {
         const shuffledIngredients = ingredientOptions.sort(() => 0.5 - Math.random());
         bowl.ingredients = shuffledIngredients.slice(0, sizeObj.num_ingredients);
 
-        console.log(bowl);
+        //console.log(bowl);
 
         bowlArray.push(bowl);
     }
@@ -64,4 +57,4 @@ function generateBowls(count) {
     return bowlArray;
 }
 
-export { Bowl, bowl_sizes, generateBowls};
+export { bowl_sizes, generateBowls};

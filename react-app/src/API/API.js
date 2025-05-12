@@ -1,5 +1,3 @@
-
-
 async function LoadOrders(user) {
     try {
         const response = await fetch(`http://localhost:3000/user/${user}/retrieveOrders`);
@@ -58,5 +56,17 @@ async function LoadBowlsOrder(username,orderId){
         }
     };
 
+export async function fetchBowlAvailability() {
+    try {
+        const response = await fetch('http://localhost:3000/bowlsAvailability');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching bowl availability:', error);
+        throw error;
+    }
+}
 
 export{LoadOrders, LoadBowlsOrder, SubmitOrder}

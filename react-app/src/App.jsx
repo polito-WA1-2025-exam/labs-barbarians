@@ -58,8 +58,9 @@ function App() {
   };
 
   const handleSubmitOrder = (username, orderData) => {
-    console.log("Username:", username);
-    console.log("Order Data:", JSON.stringify(orderData, null, 2)); // Log the order data in a readable format
+    //console.log("Username:", username);
+    //console.log("Order Data:", JSON.stringify(orderData, null, 2)); // Log the order data in a readable format
+    SubmitOrder(username,orderData);
     setOrder(new Order()); // Clear the current order after submission
   };
 
