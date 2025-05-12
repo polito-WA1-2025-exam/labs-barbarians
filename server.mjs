@@ -22,6 +22,25 @@ app.get('/bowlsLeft/:size', (req, res) =>{
     .catch((err) => res.status(500).json(err));
 })	
 
+app.get('/bowlsAvailability', (req, res) => {
+    const sizes = ["R", "M", "L"];
+    const promises = sizes.map(size => 
+        dbManager.bowlsLeft(size)
+            .then(count => ({ size, count }))
+            .catch(err => {
+                console.error(`Error fetching bowls for size ${size}:`, err);
+                throw err;
+            })
+    );
+
+    Promise.all(promises)
+        .then(results => res.json(results))
+        .catch(err => {
+            console.error("Error in /bowlsAvailability:", err);
+            res.status(500).json({ error: "Error fetching bowl availability", details: err.message });
+        });
+});
+
 app.post('/addUser', (req,res) => {
     const {username, passwordHash} = req.body ;
 
@@ -43,19 +62,17 @@ app.get('/user/:username/:orderId/retrieveBowls', (req, res) => {
     dbManager.retrieveBowls(req.params.orderId).then(bowls => res.send(bowls)).catch(err => res.send(err)) ; 
 })
 
-app.post('/addOrder', (req,res)=> {
+app.post('/addOrder', (req, res) => {
     console.log("full body", req.body);
-    const{username, order,totalPrice} = req.body ;
-    //console.log('this is the order:',order);
-    
-    dbManager.addOrder(username, order, totalPrice)
-    .then(order => res.json(order))
-    .catch(err => {
-        console.error("Error adding order:", err);
-        res.status(500).json({ error: "DB error" });
-    });
-})
+    const { username, order, totalPrice } = req.body;
 
+    dbManager.addOrder(username, order, totalPrice)
+        .then(order => res.json(order))
+        .catch(err => {
+            console.error("Error adding order:", err); // Check this log
+            res.status(500).json({ error: "DB error" });
+        });
+});
 
 app.post('/addBowls/', (req, res) => {
     const {orderId, size, base, proteins, ingredients, nrBowls, price} = req.body ;
@@ -67,7 +84,7 @@ app.listen(3000, () =>	console.log('Server	ready'));
 
 
 
- 
+
 
 
 

@@ -72,39 +72,47 @@ export class DBmanager {
 
   bowlsLeft(size) {
     return new Promise((resolve, reject) => {
-      const sql = `SELECT nrBowlsLeft
-                FROM bowls_stock
-                WHERE size = ?`;
+        console.log(`Checking bowls left for size: ${size}`);
+        const sql = `SELECT nrBowlsLeft
+                     FROM bowls_stock
+                     WHERE size = ?`;
 
-      this.db.all(sql, [size], function (err, rows) {
-        if (err) {
-          reject(err);
-        } else if (rows.lentgh === 0) {
-          reject(new Error(`No bowls found for size: ${size}`));
-        }
-        const currentBowls = rows[0].nrBowlsLeft;
-        if (!currentBowls) {
-          reject(`No bowls left in stock of size ${size}!`);
-        } else {
-          console.log(`There are ${currentBowls} bowls left of size ${size}`);
-          resolve(currentBowls);
-        }
-      });
+        this.db.all(sql, [size], function (err, rows) {
+            if (err) {
+                console.error(`Database error for size ${size}:`, err);
+                reject(err);
+            } else if (rows.length === 0) {
+                console.warn(`No bowls found for size: ${size}`);
+                resolve(new Error(`No bowls found for size: ${size}`));
+            } else {
+                const currentBowls = rows[0].nrBowlsLeft;
+                if (!currentBowls) {
+                    console.warn(`No bowls left in stock for size: ${size}`);
+                    resolve(currentBowls);
+                } else {
+                    console.log(`Bowls left for size ${size}: ${currentBowls}`);
+                    resolve(currentBowls);
+                }
+            }
+        });
     });
   }
 
   updateBowlsLeft(size, number) {
     return new Promise((resolve, reject) => {
-      const sql = `UPDATE bowls_stock 
-            SET nrBowlsLeft = nrBowlsLeft - ? 
-            WHERE size = ?`;
-      this.db.run(sql, [number, size], function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve("Bowls has been ordered"); // Returning the number of rows changed
-        }
-      });
+        console.log(`Updating stock for size ${size}: reducing by ${number}`);
+        const sql = `UPDATE bowls_stock 
+                     SET nrBowlsLeft = nrBowlsLeft - ? 
+                     WHERE size = ?`;
+        this.db.run(sql, [number, size], function (err) {
+            if (err) {
+                console.error("Error updating stock:", err);
+                reject(err);
+            } else {
+                console.log(`Stock updated successfully for size ${size}`);
+                resolve("Stock updated successfully");
+            }
+        });
     });
   }
 
@@ -158,62 +166,82 @@ export class DBmanager {
 
   addOrder(username, order, totalPrice) {
     return new Promise((resolve, reject) => {
-      this.db.serialize(() => {
-        // Start the transaction
-        this.db.run("BEGIN TRANSACTION", async (err) => {
-          if (err) return reject(err);
+        this.db.serialize(() => {
+            this.db.run("BEGIN TRANSACTION", async (err) => {
+                if (err) return reject(err);
 
-          try {
-            let totPrice = totalPrice ?? 0;
-            let totNrBowls = 0;
-            let nrLeft = 0;
-            // Create order and get the orderId
-            const orderId = await this.createOrder(username);
-            //console.log("this order: ", order)
-            // Process all bowls in parallel
-            await Promise.all(
-              order.bowls.map(async (bowl) => {
-                console.log(`Processing bowl: ${JSON.stringify(bowl)}`);
-                if (bowl.size === "R"){
-                 nrLeft = await this.bowlsLeft("R");}
-                else if (bowl.size === "M"){
-                   nrLeft = await this.bowlsLeft("M");}
-                else if (bowl.size === "L"){
-                   nrLeft = await this.bowlsLeft("L");}
-                if (nrLeft < bowl.nrBowls) {
-                  throw new Error(`Not enough bowls of size ${bowl.size}`);
+                try {
+                    let totPrice = totalPrice ?? 0;
+                    let totNrBowls = 0;
+
+                    const orderId = await this.createOrder(username);
+
+                    // Map size strings to database keys
+                    const sizeMap = {
+                        R: "R",
+                        M: "M",
+                        L: "L",
+                    };
+
+                    // Track stock updates for each size
+                    const stockUpdates = {};
+
+                    // Step 1: Check availability for all sizes
+                    for (const bowl of order.bowls) {
+                        console.log(`Processing bowl: ${JSON.stringify(bowl)}`);
+
+                        // Map size to database key
+                        const dbSize = sizeMap[bowl.size];
+                        if (!dbSize) {
+                            throw new Error(`Invalid size: ${bowl.size}`);
+                        }
+
+                        const nrLeft = await this.bowlsLeft(dbSize);
+                        console.log(`Stock before update for size ${dbSize}: ${nrLeft}`);
+                        if (nrLeft < bowl.nrBowls) {
+                            throw new Error(`Not enough bowls of size ${bowl.size}`);
+                        }
+
+                        // Add to stock updates
+                        stockUpdates[dbSize] = (stockUpdates[dbSize] || 0) + bowl.nrBowls;
+
+                        totPrice += bowl.price * bowl.nrBowls;
+                        totNrBowls += bowl.nrBowls;
+                    }
+
+                    // Step 2: Process the transaction (add bowls to the order)
+                    for (const bowl of order.bowls) {
+                        const dbSize = sizeMap[bowl.size];
+                        await this.addBowl(
+                            orderId,
+                            dbSize,
+                            bowl.base,
+                            bowl.proteins,
+                            bowl.ingredients,
+                            bowl.nrBowls,
+                            bowl.price
+                        );
+                    }
+
+                    // Step 3: Update stock for each size once
+                    for (const [size, totalReduction] of Object.entries(stockUpdates)) {
+                        console.log(`Updating stock for size ${size}: reducing by ${totalReduction}`);
+                        await this.updateBowlsLeft(size, totalReduction);
+                    }
+
+                    // Step 4: Update the order totals
+                    await this.updateOrder(orderId, totPrice, totNrBowls);
+
+                    this.db.run("COMMIT", (commitErr) => {
+                        if (commitErr) return reject(commitErr);
+                        resolve({ orderId, username });
+                    });
+                } catch (err) {
+                    console.error("Error during transaction:", err);
+                    this.db.run("ROLLBACK", () => reject(err));
                 }
-
-                await this.addBowl(
-                  orderId,
-                  bowl.size,
-                  bowl.base,
-                  bowl.proteins,
-                  bowl.ingredients,
-                  bowl.nrBowls,
-                  bowl.price
-                );
-
-                await this.updateBowlsLeft(bowl.size, nrLeft - bowl.nrBowls);
-
-                //totPrice += bowl.price;
-                totNrBowls += bowl.nrBowls;
-              })
-            );
-            // Update the order with final totals
-            await this.updateOrder(orderId, totPrice, totNrBowls);
-
-            // Commit the transaction
-            this.db.run("COMMIT", (commitErr) => {
-              if (commitErr) return reject(commitErr);
-              resolve({ orderId, username });
             });
-          } catch (err) {
-            // Rollback transaction on any error
-            this.db.run("ROLLBACK", () => reject(err));
-          }
         });
-      });
     });
   }
 
