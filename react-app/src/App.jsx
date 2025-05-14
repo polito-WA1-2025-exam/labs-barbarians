@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {Bowl, generateBowls} from './models/bowl.mjs';
+import {Bowl} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import NavBar from './components/NavBar';
 import ProfileModal from './components/Profile/ProfileModal';
@@ -15,32 +15,15 @@ import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
 
 import { format } from 'morgan';
 
-function generateOrders() {
-  const bowls = generateBowls(10); // Generate 10 random bowls
-  let order1 = new Order(1);
-  order1.addBowl(bowls[0]);
-  order1.addBowl(bowls[1]);
-  let order2 = new Order(2);
-  order2.addBowl(bowls[2]);
-  order2.addBowl(bowls[3]);
-  let order3 = new Order(3);
-  order3.addBowl(bowls[4]);
-  let order4 = new Order(4);
-  order4.addBowl(bowls[5]);
-  const orders = [order1, order2, order3, order4];
-  return orders;
-}
+
 
 function App() {
-  const [username, setUsername] = useState('testUser'); // User state
+  const [username, setUsername] = useState('test123'); // User state
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
   const [order, setOrder] = useState(new Order()); // Order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
 
-  useEffect(() => {
-    const orders = generateOrders();
-    setPastOrders(orders);
-  }, []);
+ 
 
   const handleDeleteProfile = () => {
     alert('Profile deleted!');

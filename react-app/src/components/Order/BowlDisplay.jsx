@@ -1,78 +1,64 @@
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import React, { useState, useEffect } from 'react';
 import ProteinSelection from './DisplayProteinSelection';
 import SizeSelection from './DisplaySizeSelection';
 import IngredientSelection from './DisplayIngredientSelection';
-import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 import BaseSelection from './DisplayBaseSelection';
-import bases from '../../models/ingredients.mjs';
-import { fetchBowlAvailability } from '../../API/API.js';
+import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 
 function BowlDisplay({ addToOrder, availability }) {
-    const [size, setSize] = useState(bowl_sizes.regular);
+    const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
     const [toppingSelections, setToppingSelections] = useState({});
     const [quantity, setQuantity] = useState(1);
 
-    const handleSizeChange = (newSize) => {
-        console.log("Selected size:", newSize);
-        setSize(Object.values(bowl_sizes).find(entry => entry.str === newSize));
+    const handleSizeChange = (sizeKey) => {
+        const selectedSize = bowl_sizes[sizeKey];
+        if (!selectedSize) {
+            console.error(`Invalid size selected: ${sizeKey}`);
+            return;
+        }
+        setSize(selectedSize);
         setProteinSelections({});
         setToppingSelections({});
     };
 
     const calculatePrice = () => {
-        const basePrice = size.price;
-        const extraToppings = Math.max(0, Object.values(toppingSelections).reduce((sum, qty) => sum + qty, 0) - size.num_ingredients);
-        const extraToppingsCost = extraToppings * (basePrice * 0.2); // 20% of base price per extra topping
-        return ((basePrice + extraToppingsCost) * quantity).toFixed(2); // Return price with 2 decimal places
-    };
-    const sizeMap = {
-        regular: "R",
-        medium: "M",
-        big: "L",
+        const extraToppings = Math.max(
+            0,
+            Object.values(toppingSelections).reduce((sum, qty) => sum + qty, 0) - size.num_ingredients
+        );
+        const extraToppingsCost = extraToppings * (size.price * 0.2); // 20% of base price per extra topping
+        return ((size.price + extraToppingsCost) * quantity).toFixed(2);
     };
 
     const handleAddBowl = () => {
-        
-
-        const availabilityKey = sizeMap[size.str.toLowerCase()]; // Map size to `R`, `M`, `L`
-        console.log("Availability:", availability);
-        console.log("Selected size:", size.str);
-        console.log("Mapped size key:", availabilityKey);
-
-        if (quantity > (availability[availabilityKey] || 0)) {
-            alert(`Not enough bowls available for size ${size.str}. Only ${availability[availabilityKey]} left.`);
+        if (quantity > (availability[size.key] || 0)) {
+            alert(`Not enough bowls available for size ${size.label}. Only ${availability[size.key]} left.`);
             return;
         }
 
         const selectedProteins = Object.keys(proteinSelections).filter(protein => proteinSelections[protein] > 0);
         const selectedToppings = Object.keys(toppingSelections).filter(topping => toppingSelections[topping] > 0);
 
-        const newBowl = new Bowl(size.str.toLowerCase(), base); // Use `regular`, `medium`, `big`
+        const newBowl = new Bowl(size.key, base);
         newBowl.proteines = selectedProteins;
         newBowl.ingredients = selectedToppings;
-        newBowl.price = size.price;
 
         addToOrder(newBowl, quantity);
     };
-
-    const totalPrice = calculatePrice();
 
     return (
         <div className="container-fluid content-padding">
             <h2 className="text-center mb-4">Create Your PokéBowl</h2>
 
-            {/* Size Selection */}
             <div className="row">
                 <SizeSelection size={size} handleSizeChange={handleSizeChange} />
                 <BaseSelection base={base} setBase={setBase} />
             </div>
 
-            {/* Proteins and Toppings */}
             <div className="row mt-4">
                 <ProteinSelection
                     maxProteins={size.num_proteins}
@@ -86,7 +72,6 @@ function BowlDisplay({ addToOrder, availability }) {
                 />
             </div>
 
-            {/* Number of Bowls Selection */}
             <Form.Group className="mb-3 w-50 mx-auto">
                 <Form.Label><strong>Number of bowls</strong></Form.Label>
                 <Form.Select
@@ -102,33 +87,17 @@ function BowlDisplay({ addToOrder, availability }) {
                 </Form.Select>
             </Form.Group>
 
-            {/* Price Preview */}
-            <h4 className="text-center mt-3">Total Price: {totalPrice}€</h4>
+            <h4 className="text-center mt-3">Total Price: {calculatePrice()}€</h4>
 
-            {/* Submit Button */}
             <div className="text-center">
                 <Button
                     variant="success"
                     className="mt-3 px-5 py-2"
                     onClick={handleAddBowl}
-                    disabled={quantity > (availability[sizeMap[size.str.toLowerCase()]] || 0)}
+                    disabled={quantity > (availability[size.key] || 0)}
                 >
                     Add Bowl to Order
                 </Button>
-            </div>
-
-            {/* Availability Display */}
-            <div className="mt-4">
-                <h4>Available Bowls:</h4>
-                <ul>
-                    {Array.isArray(availability)
-                        ? availability.map(({ size, count }) => (
-                            <li key={size}>{size}: {count} available</li>
-                          ))
-                        : Object.entries(availability).map(([size, count]) => (
-                            <li key={size}>{size}: {count} available</li>
-                          ))}
-                </ul>
             </div>
         </div>
     );

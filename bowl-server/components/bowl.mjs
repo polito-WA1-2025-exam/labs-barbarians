@@ -6,14 +6,10 @@ import {bases, proteines, ingredients} from "./ingredients.mjs";
 const bowl_sizes = {
     regular: {num_proteins: 1, num_ingredients: 4},
     medium: {num_proteins: 2, num_ingredients: 4},
-    big: {num_proteins: 3, num_ingredients: 6}
+    large: {num_proteins: 3, num_ingredients: 6}
 }
 
-/**
- * The Bowl object represents one bowl. Thereby it stores the size, base, proteiens and ingredients and determine its prices. The bowl object cannot be identified by an ID but by a string that is created with the provided toString method. 
- * @param {bowl_sizes} size - Determines the size of the bowl.
- * @param {bases} base - Provides the base for this bowl.
- */
+
 function Bowl (size, base) {
     // Checks the validity of the passed size.
     if (!(size in bowl_sizes)) {
@@ -78,7 +74,7 @@ function Bowl (size, base) {
             price = 9;
         } else if (this.size === 'medium') {
             price = 11;
-        } else if (this.size === 'big') {
+        } else if (this.size === 'large') {
             price = 14;
         }
     
