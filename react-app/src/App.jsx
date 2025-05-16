@@ -68,18 +68,30 @@ function App() {
   };
 
   const retriveOrders = (username) =>{
-    LoadOrders("ali")
-    .then((loadedOrders => {
-      console.log(loadedOrders) 
-      loadedOrders.forEach(order => {
-        const loadBowls = LoadBowlsOrder("ali",order.id).then((loadedBowls => {
-        loadedBowls.forEach(bowl => {
-          order.addBowl(bowl)
-        });
-        }));
+    const pastOrders = [];
+    LoadOrders(username)
+    .then((ordersJSONs => { 
+      ordersJSONs.forEach(orderJSON => {
+        const order = new Order(orderJSON.id);
+        order.date = orderJSON.date;
+        LoadBowlsOrder(username,order.id)
+        .then(
+          loadedBowlsJSON => {
+              loadedBowlsJSON.forEach(bowlJSON => {
+                const bowl = new Bowl(bowlJSON.size, bowlJSON.base);
+                bowl.proteines = JSON.parse(bowlJSON.proteins);
+                bowl.ingredients = JSON.parse(bowlJSON.ingredients);
+                bowl.price = bowlJSON.price;
+                order.addBowl(bowl)
+              });
+            }).catch(error => {
+              console.error("Error loading bowls for order:", error);
+            });
+            order.price = orderJSON.totPrice;
+            pastOrders.push(order);
       });
-      setPastOrders(loadedOrders)
-      console.log(pastOrders)
+      setPastOrders(pastOrders);
+      console.log("Past Orders:", pastOrders);
     }))
 
   }
@@ -88,7 +100,7 @@ function App() {
 
 
   useEffect((username) =>{
-    retriveOrders(username);
+    retriveOrders('ali');
   },[])
 
 
