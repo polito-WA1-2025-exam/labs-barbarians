@@ -33,7 +33,6 @@ function Order(orderId) {
         }else{
             this.bowls.push([bowl, 1]);
         }
-        this.price += bowl.price;
     }
 
     this.changeNumBowls = function(bowl, num){

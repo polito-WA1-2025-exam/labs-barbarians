@@ -24,4 +24,12 @@ class Bowl {
     }
 }
 
-export { Bowl };
+const parseJSONToBowl = (json) => {
+    const bowl = new Bowl(json.size, json.base);
+    bowl.proteines = JSON.parse(json.proteins);
+    bowl.ingredients = JSON.parse(json.ingredients);
+    bowl.price = json.price;
+    return bowl;
+}
+
+export { Bowl, parseJSONToBowl };

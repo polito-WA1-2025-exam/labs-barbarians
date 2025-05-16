@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import {Bowl} from './models/bowl.mjs';
+import {Bowl, parseJSONToBowl} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import NavBar from './components/NavBar';
 import ProfileModal from './components/Profile/ProfileModal';
@@ -74,20 +74,17 @@ function App() {
       ordersJSONs.forEach(orderJSON => {
         const order = new Order(orderJSON.id);
         order.date = orderJSON.date;
+        order.price = orderJSON.totPrice;
         LoadBowlsOrder(username,order.id)
         .then(
           loadedBowlsJSON => {
               loadedBowlsJSON.forEach(bowlJSON => {
-                const bowl = new Bowl(bowlJSON.size, bowlJSON.base);
-                bowl.proteines = JSON.parse(bowlJSON.proteins);
-                bowl.ingredients = JSON.parse(bowlJSON.ingredients);
-                bowl.price = bowlJSON.price;
+                const bowl = parseJSONToBowl(bowlJSON);
                 order.addBowl(bowl)
               });
             }).catch(error => {
               console.error("Error loading bowls for order:", error);
             });
-            order.price = orderJSON.totPrice;
             pastOrders.push(order);
       });
       setPastOrders(pastOrders);
