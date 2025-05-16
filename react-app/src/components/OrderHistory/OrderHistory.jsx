@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import OrderHistoryEntry from './OrderHistoryEntry';
 import OrderSummary from './OrderSummary';
 
-function DisplayOrderHistory({ orders }) {
+function DisplayOrderHistory({ orders, retriveOrders }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
@@ -11,6 +11,7 @@ function DisplayOrderHistory({ orders }) {
     setSelectedOrder(order);
     setModalShow(true);
   };
+
 
   return (
     <>

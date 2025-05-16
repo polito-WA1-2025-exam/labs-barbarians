@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import {Bowl} from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import NavBar from './components/NavBar';
@@ -13,16 +13,19 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
 
+
 import { format } from 'morgan';
+import { use } from 'react';
+
 
 
 
 function App() {
-  const [username, setUsername] = useState('test123'); // User state
+  const [username, setUsername] = useState('ali'); // User state
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
   const [order, setOrder] = useState(new Order()); // Order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
-
+  
  
 
   const handleDeleteProfile = () => {
@@ -64,6 +67,31 @@ function App() {
     setOrder(newOrder);
   };
 
+  const retriveOrders = (username) =>{
+    LoadOrders("ali")
+    .then((loadedOrders => {
+      console.log(loadedOrders) 
+      loadedOrders.forEach(order => {
+        const loadBowls = LoadBowlsOrder("ali",order.id).then((loadedBowls => {
+        loadedBowls.forEach(bowl => {
+          order.addBowl(bowl)
+        });
+        }));
+      });
+      setPastOrders(loadedOrders)
+      console.log(pastOrders)
+    }))
+
+  }
+
+
+
+
+  useEffect((username) =>{
+    retriveOrders(username);
+  },[])
+
+
   return (
     <Router>
       {/* Navigation Bar */}
@@ -91,7 +119,11 @@ function App() {
           {/* Past Orders Page */}
           <Route
             path="/past-orders"
-            element={<DisplayOrderHistory orders={pastOrders} />}
+            element={
+            <DisplayOrderHistory 
+              orders={pastOrders} 
+              retriveOrders={retriveOrders}/>}
+              
           />
 
           {/* Login Page */}
