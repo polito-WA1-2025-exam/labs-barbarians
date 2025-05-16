@@ -297,7 +297,7 @@ export class DBmanager {
        .recreateDatabase()
        .then((res) => console.log(res))
        .catch((err) => console.error(err));
-   }})
+   }
 //   await dbManager
 //     .addUser("user5", "cba321")
 //     .then((res) => console.log("User added:", res))
@@ -384,6 +384,6 @@ export class DBmanager {
 //     .catch((err) => console.error(err));
 
 //   dbManager.closeDBmanager();
-// })();
+ })();
 
 // export default DBmanager;
