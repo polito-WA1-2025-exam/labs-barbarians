@@ -48,6 +48,11 @@ function BowlDisplay({ addToOrder, availability }) {
         newBowl.ingredients = selectedToppings;
 
         addToOrder(newBowl, quantity);
+
+        setSize(bowl_sizes.R);
+        setProteinSelections({});
+        setToppingSelections({});
+        setQuantity(1)
     };
 
     return (

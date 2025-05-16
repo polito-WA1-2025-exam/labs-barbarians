@@ -37,7 +37,7 @@ function ProteinSelection({maxProteins, proteinSelections, setProteinSelections}
                                                     onChange={(e) => handleProteinChange(protein, e.target.value)}
                                                     disabled={remainingProteins === 0 && !(proteinSelections[protein] > 0)}
                                                 >
-                                                    {[...Array(maxProteins +1 ).keys()].map((i) => (
+                                                    {[...Array((proteinSelections[protein] || 0) + remainingProteins + 1).keys()].map((i) => (
                                                         <option key={i} value={i}>
                                                             {i}
                                                         </option>
