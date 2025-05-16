@@ -289,15 +289,15 @@ export class DBmanager {
   }
 }
 
-// (async () => {
-//   const resetDB = true; //Set to false in order to keep information in DB 
-//   const dbManager = new DBmanager();
-//   if (resetDB) {
-//     await dbManager
-//       .recreateDatabase()
-//       .then((res) => console.log(res))
-//       .catch((err) => console.error(err));
-//   }
+ (async () => {
+   const resetDB = true; //Set to false in order to keep information in DB 
+   const dbManager = new DBmanager();
+   if (resetDB) {
+     await dbManager
+       .recreateDatabase()
+       .then((res) => console.log(res))
+       .catch((err) => console.error(err));
+   }})
 //   await dbManager
 //     .addUser("user5", "cba321")
 //     .then((res) => console.log("User added:", res))
