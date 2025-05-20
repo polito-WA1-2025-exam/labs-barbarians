@@ -11,7 +11,7 @@ import LoginPage from './components/Profile/LoginDisplay';
 import OrderDisplay from './components/Order/OrderDisplay';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
+import {  SubmitOrder } from './API/API.js';
 
 import { format } from 'morgan';
 
@@ -22,6 +22,8 @@ function App() {
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
   const [order, setOrder] = useState(new Order()); // Order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
+  const [orderQuantities, setOrderQuantities] = useState({ R: 0, M: 0, L: 0 }); 
+  
 
  
 
@@ -34,9 +36,17 @@ function App() {
   const handleAddToOrder = (bowl, num) => {
     const newOrder = new Order();
     newOrder.bowls = order.bowls;
+
     for (let i = 0; i < num; i++) {
-      newOrder.addBowl(bowl);
+        newOrder.addBowl(bowl);
     }
+
+    // Update order quantities
+    setOrderQuantities(prev => ({
+        ...prev,
+        [bowl.size]: (prev[bowl.size] || 0) + num, // Increment the quantity for the bowl size
+    }));
+
     setOrder(newOrder);
   };
 
@@ -52,14 +62,13 @@ function App() {
   };
 
   const setNumOfBowl = (bowl, num) => {
+    // Only update the order state, not orderQuantities
     const newOrder = new Order();
     if (num > 0) {
-      // Update the quantity of the bowl
-      order.changeNumBowls(bowl, num);
-      newOrder.bowls = order.bowls;
+        order.changeNumBowls(bowl, num);
+        newOrder.bowls = order.bowls;
     } else {
-      // Remove the bowl from the order
-      newOrder.bowls = order.bowls.filter(([existingBowl]) => existingBowl !== bowl);
+        newOrder.bowls = order.bowls.filter(([existingBowl]) => existingBowl !== bowl);
     }
     setOrder(newOrder);
   };
@@ -84,6 +93,8 @@ function App() {
                 addToOrder={handleAddToOrder}
                 setNumOfBowl={setNumOfBowl}
                 submitOrder={handleSubmitOrder}
+                orderQuantities={orderQuantities} 
+                setOrderQuantities={setOrderQuantities} 
               />
             }
           />

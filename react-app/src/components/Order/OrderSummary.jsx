@@ -2,6 +2,7 @@ import { Offcanvas, Button } from "react-bootstrap";
 import BowlSummary from "./OrderBriefSummary";
 import { bowl_sizes } from "../../models/bowl.mjs";
 
+
 function OrderSummary(props) {
     const bowls = props.getBowls();
 
@@ -48,7 +49,17 @@ function OrderSummary(props) {
             </Offcanvas.Header>
             <Offcanvas.Body>
                 {bowls.map(([bowl, quantity], index) => (
-                    <BowlSummary key={index} idx={index} bowl={bowl} numberOfBowls={quantity} setNumOfBowl={props.setNumOfBowl} />
+                    <BowlSummary
+                        key={index}
+                        idx={index}
+                        bowl={bowl}
+                        numberOfBowls={quantity}
+                        setNumOfBowl={props.setNumOfBowl}
+                        availability={props.availability}
+                        setAvaibility={props.setAvaibility}
+                        orderQuantities={props.orderQuantities}
+                        setOrderQuantities={props.setOrderQuantities} 
+                    />
                 ))}
                 <h3>Total Price: €{calculateTotalPrice().toFixed(2)}</h3>
                 <Button variant="success" onClick={handleSubmit}>

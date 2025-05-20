@@ -17,6 +17,7 @@ class Bowl {
         this.proteines = [];
         this.ingredients = [];
         this.price = size.price;
+        this.nrBowls = 0;
     }
 
     toString() {
