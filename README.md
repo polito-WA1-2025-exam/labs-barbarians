@@ -146,3 +146,7 @@ The following requests should be possible
 
 ## No calls
 - deleteUser()
+
+## Bug 
+NOt keeping track of quantity od either toppings or proteins!
+so if same ingridients will be treted as the same bowl!
