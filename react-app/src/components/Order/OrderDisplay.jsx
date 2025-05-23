@@ -8,8 +8,11 @@ import { fetchBowlAvailability } from '../../API/API.js';
 function OrderDisplay(props) {
     const [show, setShow] = useState(false);
     const [availability, setAvailability] = useState({}); // Add availability state
-
     const handleShow = () => setShow(true);
+
+    // const [proteinSelections, setProteinSelections] = useState({});
+    // const [toppingSelections, setToppingSelections] = useState({});
+    // const [quantity, setQuantity] = useState(1);
 
     useEffect(() => {
       fetchBowlAvailability()

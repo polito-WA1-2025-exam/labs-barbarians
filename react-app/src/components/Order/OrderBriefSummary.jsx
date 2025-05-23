@@ -32,8 +32,12 @@ function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
                         ))}
                         </Form.Select>
                     </Form.Group>
-                    <Button variant="danger" onClick={() => setNumOfBowl(bowl, 0)}>
-                    <i className="bi bi-trash"> Remove Bowl</i>
+                    <Button variant="danger" onClick={() => setNumOfBowl(bowl, 0)} className="me-2">
+                        <i className="bi bi-trash"> Remove Bowl</i>
+                    </Button>
+
+                    <Button variant="info" onClick={() => setNumOfBowl(bowl, 0)}>
+                        <i className="bi bi-pencil"> Edit Bowl</i>
                     </Button>
                 </Card.Body>
             </Card>

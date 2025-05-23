@@ -14,6 +14,7 @@ function BowlDisplay({ addToOrder, availability }) {
     const [toppingSelections, setToppingSelections] = useState({});
     const [quantity, setQuantity] = useState(1);
 
+
     const handleSizeChange = (sizeKey) => {
         const selectedSize = bowl_sizes[sizeKey];
         if (!selectedSize) {
