@@ -7,12 +7,12 @@ import IngredientSelection from './DisplayIngredientSelection';
 import BaseSelection from './DisplayBaseSelection';
 import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 
-function BowlDisplay({ addToOrder, availability }) {
-    const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
-    const [base, setBase] = useState("Rice");
-    const [proteinSelections, setProteinSelections] = useState({});
-    const [toppingSelections, setToppingSelections] = useState({});
-    const [quantity, setQuantity] = useState(1);
+function BowlDisplay(props) {
+    // const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
+    // const [base, setBase] = useState("Rice");
+    // const [proteinSelections, setProteinSelections] = useState({});
+    // const [toppingSelections, setToppingSelections] = useState({});
+    // const [quantity, setQuantity] = useState(1);
 
 
     const handleSizeChange = (sizeKey) => {
@@ -21,34 +21,34 @@ function BowlDisplay({ addToOrder, availability }) {
             console.error(`Invalid size selected: ${sizeKey}`);
             return;
         }
-        setSize(selectedSize);
-        setProteinSelections({});
-        setToppingSelections({});
+        props.setSize(selectedSize);
+        props.setProteinSelections({});
+        props.setToppingSelections({});
     };
 
     const calculatePrice = () => {
         const extraToppings = Math.max(
             0,
-            Object.values(toppingSelections).reduce((sum, qty) => sum + qty, 0) - size.num_ingredients
+            Object.values(props.toppingSelections).reduce((sum, qty) => sum + qty, 0) - props.size.num_ingredients
         );
-        const extraToppingsCost = extraToppings * (size.price * 0.2); // 20% of base price per extra topping
-        return ((size.price + extraToppingsCost) * quantity).toFixed(2);
+        const extraToppingsCost = extraToppings * (props.size.price * 0.2); // 20% of base price per extra topping
+        return ((props.size.price + extraToppingsCost) * props.quantity).toFixed(2);
     };
 
     const handleAddBowl = () => {
-        if (quantity > (availability[size.key] || 0)) {
-            alert(`Not enough bowls available for size ${size.label}. Only ${availability[size.key]} left.`);
+        if (props.quantity > (props.availability[props.size.key] || 0)) {
+            alert(`Not enough bowls available for size ${props.size.label}. Only ${props.availability[props.size.key]} left.`);
             return;
         }
 
-        const selectedProteins = Object.keys(proteinSelections).filter(protein => proteinSelections[protein] > 0);
-        const selectedToppings = Object.keys(toppingSelections).filter(topping => toppingSelections[topping] > 0);
+        const selectedProteins = Object.keys(props.proteinSelections).filter(protein => props.proteinSelections[protein] > 0);
+        const selectedToppings = Object.keys(props.toppingSelections).filter(topping => props.toppingSelections[topping] > 0);
 
-        const newBowl = new Bowl(size.key, base);
+        const newBowl = new Bowl(props.size.key, props.base);
         newBowl.proteines = selectedProteins;
         newBowl.ingredients = selectedToppings;
 
-        addToOrder(newBowl, quantity);
+        props.addToOrder(newBowl, props.quantity);
     };
 
     return (
@@ -56,20 +56,20 @@ function BowlDisplay({ addToOrder, availability }) {
             <h2 className="text-center mb-4">Create Your PokéBowl</h2>
 
             <div className="row">
-                <SizeSelection size={size} handleSizeChange={handleSizeChange} />
-                <BaseSelection base={base} setBase={setBase} />
+                <SizeSelection size={props.size} handleSizeChange={handleSizeChange} />
+                <BaseSelection base={props.base} setBase={props.setBase} />
             </div>
 
             <div className="row mt-4">
                 <ProteinSelection
-                    maxProteins={size.num_proteins}
-                    proteinSelections={proteinSelections}
-                    setProteinSelections={setProteinSelections}
+                    maxProteins={props.size.num_proteins}
+                    proteinSelections={props.proteinSelections}
+                    setProteinSelections={props.setProteinSelections}
                 />
                 <IngredientSelection
-                    maxToppings={size.num_ingredients}
-                    toppingSelections={toppingSelections}
-                    setToppingSelections={setToppingSelections}
+                    maxToppings={props.size.num_ingredients}
+                    toppingSelections={props.toppingSelections}
+                    setToppingSelections={props.setToppingSelections}
                 />
             </div>
 
@@ -77,8 +77,8 @@ function BowlDisplay({ addToOrder, availability }) {
                 <Form.Label><strong>Number of bowls</strong></Form.Label>
                 <Form.Select
                     aria-label="Choose number of bowls"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    value={props.quantity}
+                    onChange={(e) => props.setQuantity(Number(e.target.value))}
                 >
                     {[...Array(10).keys()].map((i) => (
                         <option key={i + 1} value={i + 1}>
@@ -95,7 +95,7 @@ function BowlDisplay({ addToOrder, availability }) {
                     variant="success"
                     className="mt-3 px-5 py-2"
                     onClick={handleAddBowl}
-                    disabled={quantity > (availability[size.key] || 0)}
+                    disabled={props.quantity > (props.availability[props.size.key] || 0)}
                 >
                     Add Bowl to Order
                 </Button>

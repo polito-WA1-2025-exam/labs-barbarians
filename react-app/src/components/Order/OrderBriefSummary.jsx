@@ -1,7 +1,7 @@
 import {Button, Card, Form, ListGroup} from "react-bootstrap";
 
 
-function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
+function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowlAndEditMode}) {
 
     return (
         <>
@@ -32,11 +32,11 @@ function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowl}) {
                         ))}
                         </Form.Select>
                     </Form.Group>
-                    <Button variant="danger" onClick={() => setNumOfBowl(bowl, 0)} className="me-2">
+                    <Button variant="danger" onClick={() => setNumOfBowlAndEditMode(bowl, 0, false)} className="me-2">
                         <i className="bi bi-trash"> Remove Bowl</i>
                     </Button>
 
-                    <Button variant="info" onClick={() => setNumOfBowl(bowl, 0)}>
+                    <Button variant="info" onClick={() => setNumOfBowlAndEditMode(bowl, 0, true)}>
                         <i className="bi bi-pencil"> Edit Bowl</i>
                     </Button>
                 </Card.Body>

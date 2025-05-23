@@ -4,15 +4,45 @@ import OrderSummary from './OrderSummary';
 import BowlDisplay from './BowlDisplay';
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { fetchBowlAvailability } from '../../API/API.js';
+import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 
 function OrderDisplay(props) {
     const [show, setShow] = useState(false);
     const [availability, setAvailability] = useState({}); // Add availability state
     const handleShow = () => setShow(true);
 
-    // const [proteinSelections, setProteinSelections] = useState({});
-    // const [toppingSelections, setToppingSelections] = useState({});
-    // const [quantity, setQuantity] = useState(1);
+    const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
+    const [base, setBase] = useState("Rice");
+    const [proteinSelections, setProteinSelections] = useState({});
+    const [toppingSelections, setToppingSelections] = useState({});
+    const [quantity, setQuantity] = useState(1);
+
+
+    const setNumOfBowlAndEditMode = (bowl, num, edit) => {
+      if (edit == true) {
+        setSize(bowl.size)
+        setBase(bowl.base)
+        setProteinSelections(listToDictConverter(bowl.proteines))
+        setToppingSelections(listToDictConverter(bowl.ingredients))
+        setQuantity(1)
+      } else {
+        setSize(bowl_sizes.R)
+        setBase("Rice")
+        setProteinSelections({})
+        setToppingSelections({})
+        setQuantity(1)
+      }
+
+      props.setNumOfBowl(bowl, num)
+    }
+
+    const listToDictConverter = (inputList) => {
+      const returnDict = new Map();
+      for (const listItem of inputList) {
+        counts.set(listItem, (returnDict.get(listItem) || 0) + 1);
+      }
+      return returnDict
+    }
 
     useEffect(() => {
       fetchBowlAvailability()
@@ -49,7 +79,9 @@ function OrderDisplay(props) {
 
     return (
       <>
-        <BowlDisplay addToOrder={props.addToOrder} availability={availability} />
+        <BowlDisplay addToOrder={props.addToOrder} availability={availability} size={size} setSize={setSize} base={base} setBase={setBase} 
+          proteinSelections={proteinSelections} setProteinSelections={setProteinSelections} toppingSelections={toppingSelections} 
+          setToppingSelections={setToppingSelections} quantity={quantity} setQuantity={setQuantity}/>
         <Button variant="primary" onClick={handleShow} className="me-2">
              Go to Order
             <MdOutlineShoppingBag/>
@@ -58,7 +90,7 @@ function OrderDisplay(props) {
           show={show} 
           setShow={setShow} 
           getBowls={props.getBowls} 
-          setNumOfBowl={props.setNumOfBowl} 
+          setNumOfBowlAndEditMode={setNumOfBowlAndEditMode} 
           onSubmitOrder={handleSubmitOrder} // Use the updated submit function
           availability={availability} // Pass availability to OrderSummary
           setAvailability={setAvailability} 
