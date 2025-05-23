@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import OrderHistoryEntry from './OrderHistoryEntry';
 import OrderSummary from './OrderSummary';
+import {parseJSONToBowl} from '../../models/bowl.mjs';
+import { Order } from '../../models/order.mjs';
+import { LoadOrders, LoadBowlsOrder } from '../../API/API.js';
 
-function DisplayOrderHistory({ orders, retriveOrders }) {
+function DisplayOrderHistory() {
+  const [pastOrders, setPastOrders] = useState([]); // Mock past orders
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
@@ -11,6 +15,38 @@ function DisplayOrderHistory({ orders, retriveOrders }) {
     setSelectedOrder(order);
     setModalShow(true);
   };
+
+  const retriveOrders = (username) =>{
+    const pastOrders = [];
+    LoadOrders(username)
+    .then((ordersJSONs => { 
+      ordersJSONs.forEach(orderJSON => {
+        const order = new Order(orderJSON.id);
+        order.date = orderJSON.date;
+        order.price = orderJSON.totPrice;
+        LoadBowlsOrder(username,order.id)
+        .then(
+          loadedBowlsJSON => {
+              loadedBowlsJSON.forEach(bowlJSON => {
+                const bowl = parseJSONToBowl(bowlJSON);
+                for(let i = 0; i < bowlJSON.nrBowls; i++){
+                  order.addBowl(bowl);
+                }
+              });
+            }).catch(error => {
+              console.error("Error loading bowls for order:", error);
+            });
+            pastOrders.push(order);
+      });
+      setPastOrders(pastOrders);
+      console.log("Past Orders:", pastOrders);
+    }))
+  }
+
+  useEffect((username) =>{
+    retriveOrders('ali');
+  },[])
+
 
 
   return (
@@ -26,10 +62,10 @@ function DisplayOrderHistory({ orders, retriveOrders }) {
           </tr>
         </thead>
         <tbody>
-          {orders.length > 0 ? (
-            orders.map((order) => (
+          {pastOrders.length > 0 ? (
+            pastOrders.map((order) => (
               <tr key={order.id} onClick={() => handleOrderClick(order)}>
-                <OrderHistoryEntry order={order} />
+                <OrderHistoryEntry order={order}/>
               </tr>
             ))
           ) : (

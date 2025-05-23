@@ -17,16 +17,11 @@ import { LoadOrders, LoadBowlsOrder, SubmitOrder } from './API/API.js';
 import { format } from 'morgan';
 import { use } from 'react';
 
-
-
-
 function App() {
   const [username, setUsername] = useState('ali'); // User state
   const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
   const [order, setOrder] = useState(new Order()); // Order in progress
-  const [pastOrders, setPastOrders] = useState([]); // Mock past orders
   
- 
 
   const handleDeleteProfile = () => {
     alert('Profile deleted!');
@@ -67,38 +62,6 @@ function App() {
     setOrder(newOrder);
   };
 
-  const retriveOrders = (username) =>{
-    const pastOrders = [];
-    LoadOrders(username)
-    .then((ordersJSONs => { 
-      ordersJSONs.forEach(orderJSON => {
-        const order = new Order(orderJSON.id);
-        order.date = orderJSON.date;
-        order.price = orderJSON.totPrice;
-        LoadBowlsOrder(username,order.id)
-        .then(
-          loadedBowlsJSON => {
-              loadedBowlsJSON.forEach(bowlJSON => {
-                const bowl = parseJSONToBowl(bowlJSON);
-                order.addBowl(bowl)
-              });
-            }).catch(error => {
-              console.error("Error loading bowls for order:", error);
-            });
-            pastOrders.push(order);
-      });
-      setPastOrders(pastOrders);
-      console.log("Past Orders:", pastOrders);
-    }))
-
-  }
-
-
-
-
-  useEffect((username) =>{
-    retriveOrders('ali');
-  },[])
 
 
   return (
@@ -129,11 +92,8 @@ function App() {
           <Route
             path="/past-orders"
             element={
-            <DisplayOrderHistory 
-              orders={pastOrders} 
-              retriveOrders={retriveOrders}/>}
-              
-          />
+            <DisplayOrderHistory/>} 
+            />
 
           {/* Login Page */}
           <Route

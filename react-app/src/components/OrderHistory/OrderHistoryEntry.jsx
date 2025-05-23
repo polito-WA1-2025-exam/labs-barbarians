@@ -3,7 +3,7 @@ function OrderHistoryEntry({ order }) {
     <>
       <td>{order.id}</td>
       <td>{order.date}</td>
-      <td>{order.bowls.length}</td>
+      <td>{order.numBowls}</td>
       <td>{order.price.toFixed(2)} €</td>
     </>
   );

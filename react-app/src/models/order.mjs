@@ -12,6 +12,7 @@ function Order(orderId) {
     this.price = 0;
     this.id = orderId;
     this.date = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    this.numBowls = 0;
     this.toString = function() {
         return this.id;
     }
@@ -33,6 +34,8 @@ function Order(orderId) {
         }else{
             this.bowls.push([bowl, 1]);
         }
+
+        this.numBowls ++;
     }
 
     this.changeNumBowls = function(bowl, num){
@@ -67,6 +70,8 @@ function Order(orderId) {
             }
         }
     }
+
+
 
 }
 
