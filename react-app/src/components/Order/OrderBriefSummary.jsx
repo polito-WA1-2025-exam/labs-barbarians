@@ -1,7 +1,7 @@
 import {Button, Card, Form, ListGroup} from "react-bootstrap";
 
 
-function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowlAndEditMode}) {
+function BowlSummary({idx, bowl, numberOfBowls, setNumOfBowlAndEditMode, setNumOfBowl}) {
 
     return (
         <>

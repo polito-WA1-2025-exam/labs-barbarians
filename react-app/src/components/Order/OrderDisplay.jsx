@@ -20,7 +20,7 @@ function OrderDisplay(props) {
 
     const setNumOfBowlAndEditMode = (bowl, num, edit) => {
       if (edit == true) {
-        setSize(bowl.size)
+        setSize(bowl_sizes[bowl.size])
         setBase(bowl.base)
         setProteinSelections(listToDictConverter(bowl.proteines))
         setToppingSelections(listToDictConverter(bowl.ingredients))
@@ -37,9 +37,9 @@ function OrderDisplay(props) {
     }
 
     const listToDictConverter = (inputList) => {
-      const returnDict = new Map();
+      const returnDict = {};
       for (const listItem of inputList) {
-        counts.set(listItem, (returnDict.get(listItem) || 0) + 1);
+        returnDict[listItem] = (returnDict[listItem] || 0) + 1;
       }
       return returnDict
     }
@@ -94,6 +94,7 @@ function OrderDisplay(props) {
           onSubmitOrder={handleSubmitOrder} // Use the updated submit function
           availability={availability} // Pass availability to OrderSummary
           setAvailability={setAvailability} 
+          setNumOfBowl={props.setNumOfBowl}
         />
       </>
     );

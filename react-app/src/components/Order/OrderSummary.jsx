@@ -50,7 +50,8 @@ function OrderSummary(props) {
             </Offcanvas.Header>
             <Offcanvas.Body>
                 {bowls.map(([bowl, quantity], index) => (
-                    <BowlSummary key={index} idx={index} bowl={bowl} numberOfBowls={quantity} setNumOfBowlAndEditMode={props.setNumOfBowlAndEditMode} />
+                    <BowlSummary key={index} idx={index} bowl={bowl} numberOfBowls={quantity} setNumOfBowlAndEditMode={props.setNumOfBowlAndEditMode} 
+                    setNumOfBowl={props.setNumOfBowl}/>
                 ))}
                 <h3>Total Price: €{calculateTotalPrice().toFixed(2)}</h3>
                 <Button variant="success" onClick={handleSubmit}>
