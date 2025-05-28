@@ -7,7 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function NavBar({ username, setUser, setShowProfile }) {
+function NavBar({ username, setUser, setShowProfile, onDeleteProfile }) {
   const handleLogout = () => {
     setUser(null);
   };

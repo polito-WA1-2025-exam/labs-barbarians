@@ -205,9 +205,10 @@ export class DBmanager {
                         // Add to stock updates
                         stockUpdates[dbSize] = (stockUpdates[dbSize] || 0) + bowl.nrBowls;
 
-                        totPrice += bowl.price * bowl.nrBowls;
+                        
                         totNrBowls += bowl.nrBowls;
                     }
+                    totPrice = totalPrice;
 
                     // Step 2: Process the transaction (add bowls to the order)
                     for (const bowl of order.bowls) {
@@ -290,7 +291,7 @@ export class DBmanager {
 }
 
  (async () => {
-   const resetDB = true; //Set to false in order to keep information in DB 
+   const resetDB = false; //Set to false in order to keep information in DB 
    const dbManager = new DBmanager();
    if (resetDB) {
      await dbManager

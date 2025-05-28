@@ -58,7 +58,8 @@ function OrderDisplay(props) {
           setNumOfBowl={props.setNumOfBowl} 
           onSubmitOrder={handleSubmitOrder} // Use the updated submit function
           availability={availability} // Pass availability to OrderSummary
-          setAvailability={setAvailability} 
+          setAvailability={setAvailability}
+          username={props.username} 
         />
       </>
     );

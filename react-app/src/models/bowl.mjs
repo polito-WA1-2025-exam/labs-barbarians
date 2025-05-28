@@ -17,6 +17,7 @@ class Bowl {
         this.proteines = [];
         this.ingredients = [];
         this.price = size.price;
+        this.nrBowls=1;
     }
 
     toString() {
@@ -29,6 +30,7 @@ const parseJSONToBowl = (json) => {
     bowl.proteines = JSON.parse(json.proteins);
     bowl.ingredients = JSON.parse(json.ingredients);
     bowl.price = json.price;
+    bowl.nrBowls = json.nrBowls 
     return bowl;
 }
 

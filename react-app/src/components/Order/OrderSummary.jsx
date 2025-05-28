@@ -7,7 +7,7 @@ function OrderSummary(props) {
 
     const calculateTotalPrice = () => {
         return bowls.reduce((total, [bowl, quantity]) => {
-            return total + bowl.price * quantity;
+            return total +(bowl.price*quantity) ;
         }, 0);
     };
 
@@ -37,6 +37,8 @@ function OrderSummary(props) {
             },
             totalPrice: calculateTotalPrice(),
         };
+
+        console.log("Submitting order data:", orderData); // Debugging log
 
         await props.onSubmitOrder(props.username, orderData);
     };

@@ -12,6 +12,7 @@ function Order(orderId) {
     this.price = 0;
     this.id = orderId;
     this.date = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    this.nrBowls = 0;
     this.toString = function() {
         return this.id;
     }
@@ -23,15 +24,15 @@ function Order(orderId) {
      * @throws {Error} Throws an error if the provided object is not an instance of `Bowl`. 
      * 
      */
-    this.addBowl = function(bowl) {
+    this.addBowl = function(bowl, quantity = 1) {
         if (!(bowl instanceof Bowl)) {
             throw new Error("Invalid bowl");
         }
         const index = this.bowls.findIndex(item => item[0].toString() === bowl.toString());
-        if(index !== -1) {
-            this.bowls[index][1]++;
-        }else{
-            this.bowls.push([bowl, 1]);
+        if (index !== -1) {
+            this.bowls[index][1] += quantity;
+        } else {
+            this.bowls.push([bowl, quantity]);
         }
     }
 

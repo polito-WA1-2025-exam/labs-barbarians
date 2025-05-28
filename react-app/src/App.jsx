@@ -71,16 +71,20 @@ function App() {
     const pastOrders = [];
     LoadOrders(username)
     .then((ordersJSONs => { 
+      console.log(ordersJSONs);
       ordersJSONs.forEach(orderJSON => {
         const order = new Order(orderJSON.id);
         order.date = orderJSON.date;
         order.price = orderJSON.totPrice;
+        order.nrBowls = orderJSON.nrBowls;
+        console.log("Order:", order);
         LoadBowlsOrder(username,order.id)
         .then(
           loadedBowlsJSON => {
               loadedBowlsJSON.forEach(bowlJSON => {
+                console.log("Bowl JSON:", bowlJSON);
                 const bowl = parseJSONToBowl(bowlJSON);
-                order.addBowl(bowl)
+                order.addBowl(bowl, bowlJSON.nrBowls);
               });
             }).catch(error => {
               console.error("Error loading bowls for order:", error);
@@ -97,6 +101,7 @@ function App() {
 
 
   useEffect((username) =>{
+    setUsername('ali');
     retriveOrders('ali');
   },[])
 
@@ -106,7 +111,10 @@ function App() {
       {/* Navigation Bar */}
       <NavBar
         username={username}
+        setUser={setUsername}
+        setShowProfile={setShowProfile}
         onDeleteProfile={handleDeleteProfile}
+
       />
 
       {/* Main Content */}
@@ -121,6 +129,7 @@ function App() {
                 addToOrder={handleAddToOrder}
                 setNumOfBowl={setNumOfBowl}
                 submitOrder={handleSubmitOrder}
+                username={username}
               />
             }
           />
