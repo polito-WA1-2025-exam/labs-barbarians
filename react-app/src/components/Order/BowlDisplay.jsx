@@ -7,7 +7,7 @@ import IngredientSelection from './DisplayIngredientSelection';
 import BaseSelection from './DisplayBaseSelection';
 import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 
-function BowlDisplay({ addToOrder, availability }) {
+function BowlDisplay({ addToOrder, availability, orderQuantities, setOrderQuantities }) {
     const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
@@ -35,7 +35,10 @@ function BowlDisplay({ addToOrder, availability }) {
     };
 
     const handleAddBowl = () => {
-        if (quantity > (availability[size.key] || 0)) {
+        const totalQuantityForSize = (orderQuantities[size.key] || 0) + quantity;
+
+        // Check if adding the bowl exceeds availability
+        if (totalQuantityForSize > (availability[size.key] || 0)) {
             alert(`Not enough bowls available for size ${size.label}. Only ${availability[size.key]} left.`);
             return;
         }
@@ -46,9 +49,18 @@ function BowlDisplay({ addToOrder, availability }) {
         const newBowl = new Bowl(size.key, base);
         newBowl.proteines = selectedProteins;
         newBowl.ingredients = selectedToppings;
+        newBowl.nrBowls = quantity;
 
         addToOrder(newBowl, quantity);
+
+        // Update order quantities
+        setOrderQuantities(prev => ({
+            ...prev,
+            [size.key]: totalQuantityForSize,
+        }));
     };
+
+    const isAddDisabled = (orderQuantities[size.key] || 0) + quantity > (availability[size.key] || 0);
 
     return (
         <div className="container-fluid content-padding">
@@ -94,7 +106,7 @@ function BowlDisplay({ addToOrder, availability }) {
                     variant="success"
                     className="mt-3 px-5 py-2"
                     onClick={handleAddBowl}
-                    disabled={quantity > (availability[size.key] || 0)}
+                    disabled={isAddDisabled} // Disable if it exceeds availability
                 >
                     Add Bowl to Order
                 </Button>
