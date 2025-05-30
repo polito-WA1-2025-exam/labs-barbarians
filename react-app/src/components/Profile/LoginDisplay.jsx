@@ -4,12 +4,10 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 
-const Login = () => {
-    const [isRegistering, setIsRegistering] = useState(false);
+const Login = ({setUser, handleLogin,  loggedIn }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        confirmPassword: '',
     });
 
     const handleInputChange = (e) => {
@@ -17,16 +15,12 @@ const Login = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (isRegistering) {
-            if (formData.password !== formData.confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-            console.log('Registering:', formData);
-        } else {
-            console.log('Logging in:', formData);
+        try {
+            await handleLogin(formData);
+        } catch (err) {
+            alert('Login failed');
         }
     };
 
@@ -34,7 +28,7 @@ const Login = () => {
         <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
             <Card style={{ width: '100%', maxWidth: '400px' }} className="p-4 shadow">
                 <Card.Body>
-                    <h2 className="text-center mb-4">{isRegistering ? 'Register' : 'Login'}</h2>
+                    <h2 className="text-center mb-4">Login</h2>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="formEmail">
                             <Form.Label>Email</Form.Label>
@@ -58,32 +52,10 @@ const Login = () => {
                                 required
                             />
                         </Form.Group>
-                        {isRegistering && (
-                            <Form.Group className="mb-3" controlId="formConfirmPassword">
-                                <Form.Label>Confirm Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                    placeholder="Confirm your password"
-                                    required
-                                />
-                            </Form.Group>
-                        )}
                         <Button variant="primary" type="submit" className="w-100">
-                            {isRegistering ? 'Register' : 'Login'}
+                            Login
                         </Button>
                     </Form>
-                    <div className="text-center mt-3">
-                        <Button
-                            variant="link"
-                            onClick={() => setIsRegistering(!isRegistering)}
-                            className="text-decoration-none"
-                        >
-                            {isRegistering ? 'Already have an account? Login' : 'Don’t have an account? Register'}
-                        </Button>
-                    </div>
                 </Card.Body>
             </Card>
         </Container>

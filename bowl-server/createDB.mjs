@@ -31,7 +31,8 @@ const createDatabaseTables = () => {
         db_init.serialize(() => {
             db_init.run(`CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
-                passwordHash TEXT NOT NULL
+                passwordHash TEXT NOT NULL,
+                salt TEXT NOT NULL
             )`, (err) => {
                 if (err) reject(err);
             });

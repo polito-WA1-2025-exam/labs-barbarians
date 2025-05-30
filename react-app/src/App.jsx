@@ -1,64 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import {Bowl, parseJSONToBowl} from './models/bowl.mjs';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Bowl, parseJSONToBowl } from './models/bowl.mjs';
 import { Order } from './models/order.mjs';
 import NavBar from './components/NavBar';
 import ProfileModal from './components/Profile/ProfileModal';
 import BowlDisplay from './components/Order/BowlDisplay';
 import DisplayOrderHistory from './components/OrderHistory/OrderHistory';
 import LoginPage from './components/Profile/LoginDisplay';
-// import OrderSummary from './components/Order/OrderSummary';
 import OrderDisplay from './components/Order/OrderDisplay';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {  SubmitOrder,LoadOrders, LoadBowlsOrder } from './API/API.js';
-
-
-import { format } from 'morgan';
-import { use } from 'react';
-
-
-
+import { SubmitOrder, LoadOrders, LoadBowlsOrder, logIn, logout, getSession } from './API/API.js';
 
 function App() {
-  const [username, setUsername] = useState('ali'); // User state
-  const [showProfile, setShowProfile] = useState(false); // Profile modal visibility
-  const [order, setOrder] = useState(new Order()); // Order in progress
-  const [pastOrders, setPastOrders] = useState([]); // Mock past orders
-  
-  const [orderQuantities, setOrderQuantities] = useState({ R: 0, M: 0, L: 0 }); 
-  
+  const [username, setUsername] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [order, setOrder] = useState(new Order());
+  const [pastOrders, setPastOrders] = useState([]);
+  const [message, setMessage] = useState('');
+  const [orderQuantities, setOrderQuantities] = useState({ R: 0, M: 0, L: 0 });
 
- 
-
-  const handleDeleteProfile = () => {
-    alert('Profile deleted!');
-    setUsername(null);
-    setShowProfile(false);
-  };
+  const navigate = useNavigate();
 
   const handleAddToOrder = (bowl, num) => {
     const newOrder = new Order();
     newOrder.bowls = order.bowls;
 
     for (let i = 0; i < num; i++) {
-        newOrder.addBowl(bowl);
+      newOrder.addBowl(bowl);
     }
 
-    // Update order quantities
     setOrderQuantities(prev => ({
-        ...prev,
-        [bowl.size]: (prev[bowl.size] || 0) + num, // Increment the quantity for the bowl size
+      ...prev,
+      [bowl.size]: (prev[bowl.size] || 0) + num,
     }));
 
     setOrder(newOrder);
   };
 
   const handleSubmitOrder = (username, orderData) => {
-    //console.log("Username:", username);
-    //console.log("Order Data:", JSON.stringify(orderData, null, 2)); // Log the order data in a readable format
-    SubmitOrder(username,orderData);
-    setOrder(new Order()); // Clear the current order after submission
+    SubmitOrder(username, orderData);
+    setOrder(new Order());
   };
 
   const getBowlsNums = () => {
@@ -66,65 +49,82 @@ function App() {
   };
 
   const setNumOfBowl = (bowl, num) => {
-    // Only update the order state, not orderQuantities
     const newOrder = new Order();
     if (num > 0) {
-        order.changeNumBowls(bowl, num);
-        newOrder.bowls = order.bowls;
+      order.changeNumBowls(bowl, num);
+      newOrder.bowls = order.bowls;
     } else {
-        newOrder.bowls = order.bowls.filter(([existingBowl]) => existingBowl !== bowl);
+      newOrder.bowls = order.bowls.filter(([existingBowl]) => existingBowl !== bowl);
     }
     setOrder(newOrder);
   };
 
-  const retriveOrders = (username) =>{
+  const retriveOrders = (username) => {
     const pastOrders = [];
     LoadOrders(username)
-    .then((ordersJSONs => { 
-      console.log(ordersJSONs);
-      ordersJSONs.forEach(orderJSON => {
-        const order = new Order(orderJSON.id);
-        order.date = orderJSON.date;
-        order.price = orderJSON.totPrice;
-        order.nrBowls = orderJSON.nrBowls;
-        console.log("Order:", order);
-        LoadBowlsOrder(username,order.id)
-        .then(
-          loadedBowlsJSON => {
+      .then((ordersJSONs => {
+        ordersJSONs.forEach(orderJSON => {
+          const order = new Order(orderJSON.id);
+          order.date = orderJSON.date;
+          order.price = orderJSON.totPrice;
+          order.nrBowls = orderJSON.nrBowls;
+          LoadBowlsOrder(username, order.id)
+            .then(loadedBowlsJSON => {
               loadedBowlsJSON.forEach(bowlJSON => {
-                console.log("Bowl JSON:", bowlJSON);
                 const bowl = parseJSONToBowl(bowlJSON);
                 order.addBowl(bowl, bowlJSON.nrBowls);
               });
             }).catch(error => {
               console.error("Error loading bowls for order:", error);
             });
-            pastOrders.push(order);
-      });
-      setPastOrders(pastOrders);
-      console.log("Past Orders:", pastOrders);
-    }))
+          pastOrders.push(order);
+        });
+        setPastOrders(pastOrders);
+      }))
+  };
 
-  }
+  useEffect(() => {
+  getSession()
+    .then(data => {
+      setUsername(data.username);
+      setLoggedIn(true);
+    })
+    .catch(() => {
+      setUsername('');
+      setLoggedIn(false);
+    });
+}, []);
 
+  const handleLogin = async (credentials) => {
+    console.log('Login credentials:', credentials);
+    try {
+      const loginUser = await logIn(credentials);
+      console.log('Backend returned:', loginUser);
+      setLoggedIn(true);
+      setUsername(loginUser.username); // Use .username as returned by backend
+      setMessage({ msg: `Welcome, ${loginUser.username}!`, type: 'success' });
+      navigate('/'); // Redirect to main page
+    } catch (err) {
+      setMessage({ msg: err, type: 'danger' });
+    }
+  };
 
-
-
-  useEffect((username) =>{
-    setUsername('ali');
-    retriveOrders('ali');
-  },[])
-
+  const handleLogout = async () => {
+    await logout();
+    setLoggedIn(false);
+    setUsername('');
+    setMessage('');
+  };
 
   return (
-    <Router>
+    <>
       {/* Navigation Bar */}
       <NavBar
         username={username}
+        handleLogout={handleLogout}
         setUser={setUsername}
         setShowProfile={setShowProfile}
-        onDeleteProfile={handleDeleteProfile}
-
+        loggedIn={loggedIn}
       />
 
       {/* Main Content */}
@@ -140,8 +140,9 @@ function App() {
                 setNumOfBowl={setNumOfBowl}
                 submitOrder={handleSubmitOrder}
                 username={username}
-                orderQuantities={orderQuantities} 
-                setOrderQuantities={setOrderQuantities} 
+                orderQuantities={orderQuantities}
+                setOrderQuantities={setOrderQuantities}
+                loggedIn={loggedIn} // Pass loggedIn to OrderDisplay
               />
             }
           />
@@ -150,20 +151,23 @@ function App() {
           <Route
             path="/past-orders"
             element={
-            <DisplayOrderHistory 
-              orders={pastOrders} 
-              retriveOrders={retriveOrders}/>}
-              
+              <DisplayOrderHistory
+                username={username}
+                retriveOrders={retriveOrders}
+                orders={pastOrders}
+                setOrders={setPastOrders}
+              />
+            }
           />
 
           {/* Login Page */}
           <Route
             path="/login"
-            element={<LoginPage setUser={setUsername} />}
+            element={<LoginPage handleLogin={handleLogin} setUser={setUsername} />}
           />
         </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 

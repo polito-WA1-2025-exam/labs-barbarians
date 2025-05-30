@@ -150,3 +150,6 @@ The following requests should be possible
 ## Bug 
 NOt keeping track of quantity od either toppings or proteins!
 so if same ingridients will be treted as the same bowl!
+
+user: test@test.com
+password: test

@@ -14,6 +14,8 @@ function ProteinSelection({maxProteins, proteinSelections, setProteinSelections}
         setProteinSelections(prev => ({ ...prev, [protein]: newQty }));
     };
 
+    const safeMaxProteins = Number.isFinite(maxProteins) && maxProteins > 0 ? maxProteins : 1;
+
     return(
         <div className="col-md-6">
                             <h4 className="text-center">Choose Proteins </h4>
@@ -37,7 +39,7 @@ function ProteinSelection({maxProteins, proteinSelections, setProteinSelections}
                                                     onChange={(e) => handleProteinChange(protein, e.target.value)}
                                                     disabled={remainingProteins === 0 && !(proteinSelections[protein] > 0)}
                                                 >
-                                                    {[...Array(maxProteins +1 ).keys()].map((i) => (
+                                                    {[...Array(safeMaxProteins + 1).keys()].map((i) => (
                                                         <option key={i} value={i}>
                                                             {i}
                                                         </option>

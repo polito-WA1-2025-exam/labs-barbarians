@@ -15,6 +15,8 @@ function IngredientSelection({maxToppings, toppingSelections, setToppingSelectio
         setToppingSelections(prev => ({ ...prev, [topping]: newQty }));
     };
 
+    const safeMaxToppings = Number.isFinite(maxToppings) && maxToppings > 0 ? maxToppings : 1;
+
     return(
         <div className="col-md-6">
                         <h4 className="text-center">Choose Toppings </h4>
@@ -37,7 +39,7 @@ function IngredientSelection({maxToppings, toppingSelections, setToppingSelectio
                                                     value={toppingSelections[topping] || 0}
                                                     onChange={(e) => handleToppingChange(topping, e.target.value)}
                                                 >
-                                                    {[...Array(maxToppings + 1).keys()].map((i) => (
+                                                    {[...Array(safeMaxToppings + 1).keys()].map((i) => (
                                                         <option key={i} value={i}>
                                                             {i}
                                                         </option>

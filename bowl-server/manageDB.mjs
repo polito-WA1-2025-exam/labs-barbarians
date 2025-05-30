@@ -1,5 +1,7 @@
 import sqlite from "sqlite3";
 import dayjs from "dayjs";
+import crypto from 'crypto';
+
 
 import { recreateDatabaseTables } from "./createDB.mjs";
 
@@ -22,49 +24,36 @@ export class DBmanager {
     }
   }
 
-  addUser(username, passwordHash) {
+  getUser(username, password) {
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO users(username, passwordHash) 
-                    VALUES (?,?)`;
-
-      this.db.run(sql, [username, passwordHash], function (err) {
-        if (err) {
-          console.log("User already exists!");
-          reject(err);
-        } else resolve({ id: this.lastID, username });
-      });
-    });
-  }
-
-  authUser(username, passwordHash) {
-    return new Promise((resolve, reject) => {
-      const sql = `SELECT * 
-                FROM users
-                WHERE username = ?`;
-
-      this.db.all(sql, [username], (err, rows) => {
-        console.log(rows.length);
-        if (err) {
-          reject(err);
-        } else if (rows.length === 0 || rows[0].passwordHash !== passwordHash) {
-          reject("Wrong password or username!");
-        } else {
-          resolve("Sign in :)");
+      const sql = 'SELECT * FROM users WHERE username = ?';
+      console.log('Querying user:', username);
+      this.db.get(sql, [username], (err, row) => {
+        if (err) { 
+          console.error('DB error:', err);
+          reject(err); 
         }
-      });
-    });
-  }
-
-  deleteUser(username) {
-    return new Promise((resolve, reject) => {
-      const sql = `DELETE FROM users
-            WHERE username = ?`;
-
-      this.db.run(sql, [username], (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve("User removed");
+        else if (row === undefined) { 
+          console.log('No user found for:', username);
+          resolve(false); 
+        }
+        else {
+          console.log('User row:', row);
+          const salt = row.salt;
+          const db_hashedPassword = row.passwordHash;
+          crypto.scrypt(password, salt, 32, function(err, hashedPassword) {
+            if (err) {
+              console.error('Scrypt error:', err);
+              reject(err);
+            }
+            if(!crypto.timingSafeEqual(Buffer.from(db_hashedPassword, 'hex'), hashedPassword)) {
+              console.log('Password mismatch for:', username);
+              resolve(false);
+            } else {
+              console.log('Password match for:', username);
+              resolve({ username: row.username });
+            }
+          });
         }
       });
     });

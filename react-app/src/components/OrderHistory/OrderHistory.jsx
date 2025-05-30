@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import OrderHistoryEntry from './OrderHistoryEntry';
 import OrderSummary from './OrderSummary';
 
-function DisplayOrderHistory({ orders, retriveOrders }) {
+function DisplayOrderHistory({ username, retriveOrders, orders, setOrders }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
-  
+  useEffect(() => {
+    if (username) {
+      retriveOrders(username);
+    }
+    // If retriveOrders returns a promise, you can do:
+    // retriveOrders(username).then(setOrders);
+  }, [username]);
 
   const handleOrderClick = (order) => {
     setSelectedOrder(order);
     setModalShow(true);
   };
-
 
   return (
     <>

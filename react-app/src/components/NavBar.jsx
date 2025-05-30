@@ -7,10 +7,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function NavBar({ username, setUser, setShowProfile, onDeleteProfile }) {
-  const handleLogout = () => {
-    setUser(null);
-  };
+function NavBar({ username, setUser, setShowProfile, onDeleteProfile, handleLogin, handleLogout }) {
+  
 
   const handleProfileClick = () => {
     setShowProfile(true); // Show the profile popup
@@ -40,18 +38,12 @@ function NavBar({ username, setUser, setShowProfile, onDeleteProfile }) {
                   <Dropdown.Item as={Link} to="/past-orders">
                     Past Orders
                   </Dropdown.Item>
-                  {/* <Dropdown.Item as={Link} to="/order">
-                    Order
-                  </Dropdown.Item> */}
                   <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Link to="/login" title="Login" className="text-white">
-                <i
-                  className="bi bi-box-arrow-in-left"
-                  style={{ fontSize: '1.5rem' }}
-                ></i>
+              <Link to="/login" title="Login">
+                Login
               </Link>
             )}
           </Navbar.Text>

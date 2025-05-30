@@ -7,7 +7,7 @@ import IngredientSelection from './DisplayIngredientSelection';
 import BaseSelection from './DisplayBaseSelection';
 import { Bowl, bowl_sizes } from '../../models/bowl.mjs';
 
-function BowlDisplay({ addToOrder, availability, orderQuantities, setOrderQuantities }) {
+function BowlDisplay({ addToOrder, orderQuantities, setOrderQuantities, availability }) {
     const [size, setSize] = useState(bowl_sizes.R); // Default to Regular size
     const [base, setBase] = useState("Rice");
     const [proteinSelections, setProteinSelections] = useState({});
@@ -58,9 +58,14 @@ function BowlDisplay({ addToOrder, availability, orderQuantities, setOrderQuanti
             ...prev,
             [size.key]: totalQuantityForSize,
         }));
+        setQuantity(1); // Reset quantity after adding
     };
 
-    const isAddDisabled = (orderQuantities[size.key] || 0) + quantity > (availability[size.key] || 0);
+    const isAddDisabled = () => {
+        if (availability[size.key] === undefined) return true;
+        if (!quantity || quantity < 1) return true;
+        return (orderQuantities[size.key] || 0) + quantity > (availability[size.key] || 0);
+    };
 
     return (
         <div className="container-fluid content-padding">
@@ -106,7 +111,7 @@ function BowlDisplay({ addToOrder, availability, orderQuantities, setOrderQuanti
                     variant="success"
                     className="mt-3 px-5 py-2"
                     onClick={handleAddBowl}
-                    disabled={isAddDisabled} // Disable if it exceeds availability
+                    disabled={isAddDisabled()}
                 >
                     Add Bowl to Order
                 </Button>
