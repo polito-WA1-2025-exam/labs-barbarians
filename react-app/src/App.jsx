@@ -21,6 +21,7 @@ function App() {
   const [order, setOrder] = useState(new Order()); // Order in progress
   const [pastOrders, setPastOrders] = useState([]); // Mock past orders
   const [orderQuantities, setOrderQuantities] = useState({ R: 0, M: 0, L: 0 });
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleDeleteProfile = () => {
     alert("Profile deleted!");
