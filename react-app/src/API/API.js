@@ -91,5 +91,14 @@ async function logIn(credentials) {
     }
 }
 
+async function logout() {
+    const response = await fetch(URI + `/logout`, {
+        method: 'POST',
+        credentials: 'include',
+    });
+    if (response.ok)
+        return null;
+}
 
-export{LoadOrders, LoadBowlsOrder, SubmitOrder, logIn}
+
+export{LoadOrders, LoadBowlsOrder, SubmitOrder, logIn, logout}

@@ -11,7 +11,7 @@ import LoginPage from "./components/Profile/LoginDisplay";
 import OrderDisplay from "./components/Order/OrderDisplay";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { SubmitOrder } from "./API/API.js";
+import { SubmitOrder , logIn, logout} from "./API/API.js";
 
 import { format } from "morgan";
 
