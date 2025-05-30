@@ -69,4 +69,27 @@ export async function fetchBowlAvailability() {
     }
 }
 
-export{LoadOrders, LoadBowlsOrder, SubmitOrder}
+async function logIn(credentials) {
+
+    const bodyObject = {
+        email: credentials.email,
+        password: credentials.password
+    }
+    const response = await fetch(URI + `/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(bodyObject)
+    })
+    if (response.ok) {
+        const user = await response.json();
+        return user;
+
+    } else {
+        const err = await response.text()
+        throw err;
+    }
+}
+
+
+export{LoadOrders, LoadBowlsOrder, SubmitOrder, logIn}
